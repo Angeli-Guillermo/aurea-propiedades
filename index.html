@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0F1C2E" />
+
+    <!-- ── SEO ────────────────────────────────────────────────────────────── -->
+    <title>Consultora Internacional de Negocios Inmobiliarios · Buenos Aires</title>
+    <meta
+      name="description"
+      content="Empresa inmobiliaria familiar. 60 años de trayectoria comercial de Mauro Otranto y el respaldo jurídico integral de la Dra. Vanina Marisel Cesari para tu seguridad."
+    />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://consultora-internacional.example/" />
+
+    <!-- ── Open Graph / Twitter ───────────────────────────────────────────── -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Consultora Internacional de Negocios Inmobiliarios" />
+    <meta property="og:locale" content="es_AR" />
+    <meta property="og:title" content="Consultora Internacional · Trayectoria inmobiliaria y respaldo legal" />
+    <meta
+      property="og:description"
+      content="Acompañamiento integral en la compra y venta de propiedades. 60 años de experiencia y gestión jurídica propia en Buenos Aires."
+    />
+    <meta property="og:url" content="https://consultora-internacional.example/" />
+    <!-- Sugerencia: Cambiar esta imagen por una de la oficina, de una fachada clásica o un apretón de manos -->
+    <meta
+      property="og:image"
+      content="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&h=630&q=70"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Consultora Internacional de Negocios Inmobiliarios" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Consultora Internacional · Inmobiliaria y Asesoría Legal" />
+    <meta
+      name="twitter:description"
+      content="Empresa familiar con 60 años de trayectoria comercial y respaldo jurídico integral."
+    />
+    <meta
+      name="twitter:image"
+      content="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&h=630&q=70"
+    />
+
+    <!-- ── Performance: fuentes e imagen del hero ─────────────────────────── -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=Inter:wght@300..600&display=swap"
+    />
+    <!-- LCP: precargamos únicamente la imagen del hero -->
+    <link
+      rel="preload"
+      as="image"
+      fetchpriority="high"
+      href="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1920&q=68"
+    />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- ── Datos estructurados ────────────────────────────────────────────── -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "RealEstateAgent",
+        "name": "Consultora Internacional de Negocios Inmobiliarios",
+        "description": "Empresa familiar enfocada en el mercado inmobiliario con 60 años de trayectoria y dirección legal propia a cargo de la Dra. Vanina Marisel Cesari.",
+        "url": "https://consultora-internacional.example/",
+        "telephone": "+54 11 4706-2034",
+        "email": "hola@consultora-internacional.example",
+        "priceRange": "$$",
+        "areaServed": { "@type": "City", "name": "Ciudad Autónoma de Buenos Aires" },
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Blanco Encalada 1583, PB",
+          "addressLocality": "Belgrano, CABA",
+          "addressRegion": "Buenos Aires",
+          "addressCountry": "AR"
+        },
+        "geo": { "@type": "GeoCoordinates", "latitude": -34.5543833, "longitude": -58.4511371 },
+        "openingHoursSpecification": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          "opens": "09:00",
+          "closes": "18:30"
+        }
+      }
+    </script>
+  </head>
+
+  <body>
+    <!--
+      Netlify Forms detecta formularios parseando el HTML servido, no lo que
+      React renderiza en el cliente — por eso este par de formularios "espejo"
+      tiene que existir acá, estático, con los mismos `name` de campo que
+      ValuationForm.tsx y NewsletterSignup.tsx envían por fetch. Netlify los
+      registra en el build y a partir de ahí acepta el POST real desde el JS.
+      No se muestran nunca: `hidden` los saca del flujo visual y del árbol de
+      accesibilidad.
+    -->
+    <form name="contacto" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <input type="tel" name="phone" />
+      <input type="text" name="intent" />
+      <input type="text" name="location" />
+      <textarea name="message"></textarea>
+      <input type="text" name="consent" />
+      <input type="text" name="bot-field" />
+    </form>
+    <form name="newsletter" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
+      <input type="email" name="email" />
+      <input type="text" name="bot-field" />
+    </form>
+
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

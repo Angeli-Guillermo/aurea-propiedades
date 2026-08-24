@@ -1,0 +1,156 @@
+/* Estilo compartido por aviso-legal.html, privacidad.html y cookies.html.
+   Independiente del build de Vite a propósito: son páginas estáticas simples,
+   no vale la pena meterlas en el bundle de la SPA. */
+
+:root {
+  --ink-950: #080f18;
+  --ink-900: #0f1c2e;
+  --ink-700: #1f3a56;
+  --ink-500: #476b8f;
+  --gold-600: #9a7742;
+  --gold-500: #b08d57;
+  --sand-50: #fbfaf7;
+  --sand-200: #eae5db;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--sand-50);
+  color: var(--ink-900);
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2 {
+  font-family: 'Fraunces', ui-serif, Georgia, serif;
+  font-weight: 400;
+  color: var(--ink-900);
+}
+
+a {
+  color: var(--gold-600);
+}
+
+.legal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem clamp(1.25rem, 4vw, 3rem);
+  border-bottom: 1px solid rgba(15, 28, 46, 0.1);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: var(--ink-900);
+  min-width: 0;
+}
+
+.brand .mark {
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+}
+
+.brand span {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.brand strong {
+  font-family: 'Fraunces', serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.brand small {
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-600);
+  margin-top: 0.2rem;
+}
+
+.back {
+  font-size: 0.875rem;
+  text-decoration: none;
+  color: var(--ink-700);
+  white-space: nowrap;
+}
+
+.back:hover {
+  color: var(--ink-900);
+}
+
+.legal-content {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.25rem, 4vw, 3rem) 5rem;
+}
+
+.eyebrow {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--gold-600);
+  margin: 0 0 0.75rem;
+}
+
+h1 {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  margin: 0 0 0.5rem;
+}
+
+.updated {
+  color: var(--ink-500);
+  font-size: 0.875rem;
+  margin: 0 0 3rem;
+}
+
+section {
+  margin-bottom: 2.25rem;
+}
+
+h2 {
+  font-size: 1.25rem;
+  margin: 0 0 0.75rem;
+}
+
+p,
+li {
+  color: var(--ink-700);
+  font-size: 0.9375rem;
+}
+
+ul {
+  padding-left: 1.25rem;
+}
+
+li {
+  margin-bottom: 0.5rem;
+}
+
+.see-also {
+  border-top: 1px solid var(--sand-200);
+  padding-top: 1.5rem;
+  font-size: 0.875rem;
+  color: var(--ink-500);
+}
+
+.legal-footer {
+  border-top: 1px solid rgba(15, 28, 46, 0.1);
+  padding: 1.5rem clamp(1.25rem, 4vw, 3rem);
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--ink-500);
+}

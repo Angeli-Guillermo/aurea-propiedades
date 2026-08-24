@@ -1,0 +1,125 @@
+import { motion } from 'motion/react';
+import { ArrowDown } from 'lucide-react';
+
+import { Button } from '@/components/ui/Button';
+import { Container } from '@/components/ui/Container';
+import { SITE } from '@/data/site';
+import { EASE_OUT_EXPO, staggerContainer } from '@/lib/motion';
+import { scrollToId } from '@/lib/scroll';
+
+const HERO_IMAGE =
+  'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1920&q=68';
+
+/** Entrada del hero: cada bloque sube y aparece con un ligero desfase. */
+const heroItem = {
+  hidden: { opacity: 0, y: 32 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.9, ease: EASE_OUT_EXPO } },
+};
+
+export function Hero() {
+  return (
+    <section
+      id="inicio"
+      className="grain relative flex min-h-[100svh] items-end overflow-hidden bg-ink-950"
+    >
+      {/* Imagen LCP: eager + fetchPriority alta, precargada además desde index.html */}
+      <img
+        src={HERO_IMAGE}
+        alt=""
+        width={1920}
+        height={1280}
+        loading="eager"
+        fetchPriority="high"
+        decoding="async"
+        aria-hidden
+        className="absolute inset-0 size-full object-cover"
+      />
+
+      {/* Capas de contraste: garantizan legibilidad del titular sobre cualquier foto.
+          El velo plano de abajo es el que sostiene el contraste mínimo incluso sobre
+          las zonas más claras de la imagen (ej. techos blancos, luces) — los degradados
+          por sí solos dejaban la franja superior casi sin oscurecer. */}
+      <div aria-hidden className="absolute inset-0 bg-ink-950/45" />
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/60 to-ink-950/35"
+      />
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-gradient-to-r from-ink-950/80 via-transparent to-transparent"
+      />
+
+      <Container size="wide" className="relative z-10 pb-20 pt-36 lg:pb-28">
+        <motion.div
+          variants={staggerContainer(0.12, 0.25)}
+          initial="hidden"
+          animate="visible"
+          className="max-w-4xl"
+        >
+          <motion.p
+            variants={heroItem}
+            className="flex items-center gap-3 text-[0.6875rem] uppercase tracking-[0.28em] text-gold-300"
+          >
+            <span aria-hidden className="h-px w-10 bg-gold-300/60" />
+            {SITE.city} · Desde {SITE.foundedYear}
+          </motion.p>
+
+          <motion.h1
+            variants={heroItem}
+            className="mt-7 text-display font-light text-sand-50 text-balance"
+          >
+            Hacemos simple el proceso
+            <br />
+            de <span className="italic text-gold-300">vender o comprar</span>.
+          </motion.h1>
+
+          <motion.p
+            variants={heroItem}
+            className="mt-8 max-w-xl text-lg leading-relaxed text-sand-200/85 text-pretty"
+          >
+            Te acompañamos en cada paso, desde la tasación hasta la firma de la escritura.
+            Trabajamos en toda la Ciudad de Buenos Aires, siempre con el mismo equipo de
+            principio a fin.
+          </motion.p>
+
+          <motion.div variants={heroItem} className="mt-11 flex flex-col gap-3 sm:flex-row">
+            <Button size="lg" variant="gold" onClick={() => scrollToId('propiedades')}>
+              Ver propiedades
+            </Button>
+            <Button
+              size="lg"
+              variant="light"
+              onClick={() => scrollToId('contacto')}
+              className="bg-transparent text-sand-50 shadow-none ring-1 ring-inset ring-sand-50/30 backdrop-blur-sm hover:bg-sand-50/10 hover:text-white"
+            >
+              Tasar mi propiedad gratis
+            </Button>
+          </motion.div>
+
+          {/* Prueba social inmediata, sin ocupar una sección propia */}
+          <motion.p variants={heroItem} className="mt-10 text-sm text-sand-300/65">
+            Valoración certificada en 48 h · Sin exclusividad forzosa · 480 operaciones firmadas
+          </motion.p>
+        </motion.div>
+      </Container>
+
+      {/* Indicador de scroll */}
+      <motion.button
+        type="button"
+        onClick={() => scrollToId('propiedades')}
+        aria-label="Ir a las propiedades"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.6, duration: 0.8 }}
+        className="absolute bottom-7 right-6 z-10 hidden size-12 place-items-center rounded-full border border-sand-50/25 text-sand-50/80 transition-colors duration-300 hover:border-gold-300/70 hover:text-gold-300 lg:grid"
+      >
+        <motion.span
+          animate={{ y: [0, 5, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <ArrowDown className="size-4" aria-hidden />
+        </motion.span>
+      </motion.button>
+    </section>
+  );
+}

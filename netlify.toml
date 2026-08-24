@@ -1,0 +1,6 @@
+[build]
+  command = "node scripts/sync-properties.mjs && npm run build"
+  publish = "dist"
+
+[functions]
+  directory = "netlify/functions"
