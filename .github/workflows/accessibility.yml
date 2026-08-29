@@ -1,0 +1,31 @@
+name: Accessibility
+
+# Auditoría automática de accesibilidad (pa11y-ci + axe-core por debajo) en
+# cada push/PR a main. Único sitio de la familia El Tano Design con repo en
+# GitHub — el resto se despliega manual (Netlify Drop), sin CI a donde engancharlo.
+# Ver oss-audit-eltanodesign-sites.md.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  a11y:
+    name: pa11y-ci (WCAG2AA)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+      - name: Servir el build
+        run: npx --yes serve -s dist -l 4173 &
+      - name: Esperar al servidor
+        run: npx --yes wait-on http://localhost:4173
+      - name: Auditar accesibilidad
+        run: npx --yes pa11y-ci --standard WCAG2AA http://localhost:4173
