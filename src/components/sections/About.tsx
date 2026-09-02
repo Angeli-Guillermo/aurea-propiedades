@@ -5,7 +5,7 @@ import { Container } from '@/components/ui/Container';
 import { LazyImage } from '@/components/ui/LazyImage';
 import { TEAM } from '@/data/content';
 import { SITE } from '@/data/site';
-import { fadeSide, fadeUp, staggerContainer, staggerItem, VIEWPORT_ONCE } from '@/lib/motion';
+import { fadeUp, staggerContainer, staggerItem, VIEWPORT_ONCE } from '@/lib/motion';
 import { scrollToId } from '@/lib/scroll';
 
 /** "Dra. Vanina Marisel Cesari" → "VC" — ignora títulos (Dr./Dra./Lic.) para el placeholder. */
@@ -16,45 +16,20 @@ function initials(fullName: string): string {
   return `${first}${last}`.toUpperCase();
 }
 
-// Foto real de un edificio de la cartera (Belgrano R, Blanco Encalada 2995)
-// — no una de stock. Se probaron varias fotos reales de avisos antes de
-// elegir ésta: la mayoría son fotos funcionales de aviso (marca de agua de
-// Zonaprop, poca definición al agrandarlas), ésta es la única nítida y sin
-// marca de agua. Reemplazar cuando haya una foto real de la oficina propia
-// (Blanco Encalada 1583) o del equipo en acción.
-const ANCHOR_IMAGE =
-  'https://imgar.zonapropcdn.com/avisos/resize/1/00/53/40/99/58/1200x1200/1905906466.jpg';
-
 export function About() {
   return (
     <section id="nosotros" className="scroll-mt-24 bg-sand-100 py-24 lg:py-32">
       <Container size="wide">
-        {/* Foto real + texto. Una sola imagen a propósito: dos fotos de estilos
-            distintos (la anterior combinación de stock) generaban un choque
-            visual que le restaba elegancia al conjunto. */}
-        <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
-          <motion.div
-            variants={fadeSide('left')}
-            initial="hidden"
-            whileInView="visible"
-            viewport={VIEWPORT_ONCE}
-          >
-            <LazyImage
-              src={ANCHOR_IMAGE}
-              alt="Edificio de la cartera en Belgrano R"
-              width={1000}
-              height={1250}
-              wrapperClassName="aspect-[4/5] rounded-2xl shadow-lux"
-            />
-          </motion.div>
-
-          <div>
+        {/* 02-sep-2026: se sacó la foto del edificio de la cartera — a pedido
+            del usuario queda solo el texto, sin imagen de acompañamiento. */}
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="flex flex-col items-center">
             <motion.div
               variants={staggerContainer(0.1)}
               initial="hidden"
               whileInView="visible"
               viewport={VIEWPORT_ONCE}
-              className="flex flex-col gap-5"
+              className="flex flex-col items-center gap-5"
             >
               {/* Reemplaza el eyebrow genérico "Quiénes somos": el dato real
                   pesa más que una etiqueta de sección. */}
