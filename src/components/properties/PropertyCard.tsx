@@ -3,7 +3,7 @@ import { ArrowUpRight, Bath, BedDouble, LayoutGrid, Maximize } from 'lucide-reac
 
 import { LazyImage } from '@/components/ui/LazyImage';
 import { cn } from '@/lib/cn';
-import { formatArea, formatPrice } from '@/lib/format';
+import { cleanScrapedDescription, formatArea, formatPrice } from '@/lib/format';
 import { cardHover, staggerItem } from '@/lib/motion';
 import { PROPERTY_TYPE_LABELS, type Property } from '@/types/property';
 
@@ -77,7 +77,7 @@ export function PropertyCard({ property, onSelect, priority = false }: PropertyC
           </h3>
 
           <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-ink-600/80">
-            {property.description}
+            {cleanScrapedDescription(property.description)}
           </p>
 
           <dl className="mt-auto flex flex-wrap items-center gap-4 pt-6 text-sm text-ink-700">

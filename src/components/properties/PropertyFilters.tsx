@@ -69,7 +69,10 @@ export function PropertyFilters({
     <div className="flex flex-col gap-5">
       {/* Tipo de propiedad */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
-        <span className="text-[0.6875rem] uppercase tracking-[0.2em] text-ink-400 sm:w-14">
+        {/* text-ink-500, no ink-400: ink-400 sobre este fondo da 2.9:1 de
+            contraste, por debajo del 4.5:1 mínimo (WCAG AA) — confirmado con
+            Lighthouse en vivo, ver auditoría 02-sep-2026. */}
+        <span className="text-[0.6875rem] uppercase tracking-[0.2em] text-ink-500 sm:w-14">
           Tipo
         </span>
         <div className="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 sm:mx-0 sm:flex-wrap sm:px-0">
@@ -91,7 +94,7 @@ export function PropertyFilters({
 
       {/* Zona */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
-        <span className="text-[0.6875rem] uppercase tracking-[0.2em] text-ink-400 sm:w-14">
+        <span className="text-[0.6875rem] uppercase tracking-[0.2em] text-ink-500 sm:w-14">
           Zona
         </span>
         <div className="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 sm:mx-0 sm:flex-wrap sm:px-0">

@@ -43,21 +43,17 @@
       content="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&h=630&q=70"
     />
 
-    <!-- ── Performance: fuentes e imagen del hero ─────────────────────────── -->
+    <!-- ── Performance: fuentes ────────────────────────────────────────────── -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://images.unsplash.com" />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=Inter:wght@300..600&display=swap"
     />
-    <!-- LCP: precargamos únicamente la imagen del hero -->
-    <link
-      rel="preload"
-      as="image"
-      fetchpriority="high"
-      href="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1920&q=68"
-    />
+    <!-- 02-sep-2026: se sacó la foto de stock del hero (ver Hero.tsx) — el
+         preconnect/preload a images.unsplash.com quedaba sin uso real, la
+         única otra referencia a esa URL es og:image/twitter:image, que no
+         las descarga este navegador sino los crawlers de redes sociales. -->
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
@@ -93,29 +89,13 @@
 
   <body>
     <!--
-      Netlify Forms detecta formularios parseando el HTML servido, no lo que
-      React renderiza en el cliente — por eso este par de formularios "espejo"
-      tiene que existir acá, estático, con los mismos `name` de campo que
-      ValuationForm.tsx y NewsletterSignup.tsx envían por fetch. Netlify los
-      registra en el build y a partir de ahí acepta el POST real desde el JS.
-      No se muestran nunca: `hidden` los saca del flujo visual y del árbol de
-      accesibilidad.
+      Los formularios espejo de Netlify Forms que vivían acá se borraron el
+      02-sep-2026: el sitio migró a Vercel, que no tiene ese mecanismo, y el
+      envío real ahora pasa por api/leads.ts (Resend). Estos <input> ocultos
+      sin autocomplete eran justo lo que marcaba Lighthouse/DevTools como
+      "elemento sin autocomplete (count: 4)" — código muerto, no un fix a
+      medias.
     -->
-    <form name="contacto" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
-      <input type="text" name="name" />
-      <input type="email" name="email" />
-      <input type="tel" name="phone" />
-      <input type="text" name="intent" />
-      <input type="text" name="location" />
-      <textarea name="message"></textarea>
-      <input type="text" name="consent" />
-      <input type="text" name="bot-field" />
-    </form>
-    <form name="newsletter" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
-      <input type="email" name="email" />
-      <input type="text" name="bot-field" />
-    </form>
-
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

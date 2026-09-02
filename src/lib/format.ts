@@ -48,3 +48,21 @@ export function numberFormat(value: number, decimals = 0): string {
     maximumFractionDigits: decimals,
   }).format(value);
 }
+
+/**
+ * Limpieza mínima de las descripciones que vienen del feed de ZonaProp
+ * (scripts/sync-properties.mjs). No reescribe el contenido — lo redacta el
+ * corredor, no nosotros — solo saca artefactos de scraping detectados en
+ * vivo el 02-sep-2026: corridas de puntuación repetida ("....!!!!!"),
+ * comillas dobles/triples usadas como énfasis (""..."" / """...""") y un
+ * guion suelto colgando al final del texto.
+ */
+export function cleanScrapedDescription(text: string): string {
+  return text
+    .replace(/"{2,}/g, '"')
+    .replace(/[!?.]{3,}/g, '.')
+    .replace(/\s+([.!?])/g, '$1')
+    .replace(/\s+-\s*$/, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}

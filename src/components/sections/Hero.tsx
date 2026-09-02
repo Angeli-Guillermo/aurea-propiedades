@@ -7,9 +7,6 @@ import { SITE } from '@/data/site';
 import { EASE_OUT_EXPO, staggerContainer } from '@/lib/motion';
 import { scrollToId } from '@/lib/scroll';
 
-const HERO_IMAGE =
-  'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1920&q=68';
-
 /** Entrada del hero: cada bloque sube y aparece con un ligero desfase. */
 const heroItem = {
   hidden: { opacity: 0, y: 32 },
@@ -22,32 +19,12 @@ export function Hero() {
       id="inicio"
       className="grain relative flex min-h-[100svh] items-end overflow-hidden bg-ink-950"
     >
-      {/* Imagen LCP: eager + fetchPriority alta, precargada además desde index.html */}
-      <img
-        src={HERO_IMAGE}
-        alt=""
-        width={1920}
-        height={1280}
-        loading="eager"
-        fetchPriority="high"
-        decoding="async"
-        aria-hidden
-        className="absolute inset-0 size-full object-cover"
-      />
-
-      {/* Capas de contraste: garantizan legibilidad del titular sobre cualquier foto.
-          El velo plano de abajo es el que sostiene el contraste mínimo incluso sobre
-          las zonas más claras de la imagen (ej. techos blancos, luces) — los degradados
-          por sí solos dejaban la franja superior casi sin oscurecer. */}
-      <div aria-hidden className="absolute inset-0 bg-ink-950/45" />
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/60 to-ink-950/35"
-      />
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-gradient-to-r from-ink-950/80 via-transparent to-transparent"
-      />
+      {/* 02-sep-2026: se sacó la foto de stock (Unsplash) del hero sin
+          reemplazo — no hay una foto real disponible todavía (sin oficina
+          propia fotografiable). El fondo queda en bg-ink-950 sólido, ya
+          declarado en el <section>; las capas de degradado que existían acá
+          solo compensaban zonas claras de esa foto y no aportan nada sobre
+          un color plano. */}
 
       <Container size="wide" className="relative z-10 pb-20 pt-36 lg:pb-28">
         <motion.div

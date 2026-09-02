@@ -24,7 +24,7 @@ import { Modal } from '@/components/ui/Modal';
 import PropertyLocationMap from '@/components/map/PropertyLocationMap';
 import { whatsappUrl } from '@/data/site';
 import { cn } from '@/lib/cn';
-import { formatArea, formatPrice } from '@/lib/format';
+import { cleanScrapedDescription, formatArea, formatPrice } from '@/lib/format';
 import { scrollToId } from '@/lib/scroll';
 import { PROPERTY_TYPE_LABELS, type Property } from '@/types/property';
 
@@ -258,7 +258,7 @@ export function PropertyModal({ property, onClose }: PropertyModalProps) {
           <div>
             <h4 className="font-display text-lg font-normal text-ink-900">Sobre la propiedad</h4>
             <p className="mt-3 leading-relaxed text-ink-700/90 text-pretty">
-              {data.description}
+              {cleanScrapedDescription(data.description)}
             </p>
           </div>
 
