@@ -141,6 +141,9 @@ export function About() {
                 {member.role}
               </p>
               <p className="mt-3 text-sm leading-relaxed text-ink-600/85">{member.bio}</p>
+              {member.matricula ? (
+                <p className="mt-2 text-xs text-ink-500">{member.matricula}</p>
+              ) : null}
             </motion.article>
           ))}
         </motion.div>

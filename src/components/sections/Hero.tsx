@@ -96,8 +96,12 @@ export function Hero() {
             </Button>
           </motion.div>
 
-          {/* Prueba social inmediata, sin ocupar una sección propia */}
-          <motion.p variants={heroItem} className="mt-10 text-sm text-sand-300/65">
+          {/* Prueba social inmediata, sin ocupar una sección propia.
+              pr-16 en mobile: el botón flotante de WhatsApp (fixed bottom-5
+              right-5) se superponía a la última línea de este texto cuando
+              el hero ocupa casi toda la altura del viewport — confirmado en
+              vivo en 390px de ancho. */}
+          <motion.p variants={heroItem} className="mt-10 pr-16 text-sm text-sand-300/65 sm:pr-0">
             Valoración certificada en 48 h · Sin exclusividad forzosa · 480 operaciones firmadas
           </motion.p>
         </motion.div>

@@ -82,12 +82,15 @@ export interface TeamMember {
   bio: string;
   /** Sin foto real todavía → About.tsx muestra un placeholder con iniciales en vez de stock. */
   image?: string;
+  /** Número de matrícula profesional, cuando aplica (ej. CUCICBA). Verificable públicamente. */
+  matricula?: string;
 }
 
 /**
- * Equipo real. Foto de Vanina Cesari reutilizada de cgestudioasociados.com.ar/img/Vanina.jpg
- * (misma persona, socia también de CG Estudio Asociados). Foto de Mauro Otranto provista
- * por el usuario (`public/team/mauro-otranto.jpg`) — es provisoria, la va a reemplazar.
+ * Equipo real. Fotos servidas localmente desde public/team/ — la de Vanina Cesari se
+ * bajó de cgestudioasociados.com.ar/img/Vanina.jpg (misma persona, socia también de
+ * CG Estudio Asociados) y se copió acá para no depender de que ese sitio, un proyecto
+ * distinto, mantenga ese archivo en esa URL para siempre.
  */
 export const TEAM: TeamMember[] = [
   {
@@ -95,12 +98,14 @@ export const TEAM: TeamMember[] = [
     role: 'Corredor Inmobiliario',
     bio: 'Más de 60 años de experiencia en el mercado. Su profundo conocimiento asegura que tu propiedad sea tasada y negociada con el mayor rigor y profesionalismo.',
     image: '/team/mauro-otranto.jpg',
+    matricula: 'CUCICBA Mat. 5846',
   },
   {
     name: 'Dra. Vanina Marisel Cesari',
     role: 'Asesoría Legal',
     bio: 'Abogada. Su gestión jurídica blinda cada operación. Desde la revisión de los primeros títulos hasta la firma final, tenés el respaldo legal necesario para operar con total confianza.',
-    image: 'https://cgestudioasociados.com.ar/img/Vanina.jpg',
+    image: '/team/vanina-cesari.jpg',
+    matricula: 'CPACF T° 136 — F° 708',
   },
 ];
 
