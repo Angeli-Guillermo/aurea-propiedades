@@ -1,7 +1,5 @@
 import { z } from 'zod';
 
-import { submitToNetlifyForms } from '@/lib/netlifyForms';
-
 /**
  * Formulario de contacto / valoración.
  *
@@ -53,33 +51,19 @@ export class LeadSubmitError extends Error {
   }
 }
 
-/**
- * Envía el lead.
- *
- * Con `VITE_LEADS_API_URL` configurada, postea JSON a ese backend propio.
- * Sin ella (caso por defecto), usa Netlify Forms — no hace falta backend:
- * las respuestas quedan en el panel de Netlify (Forms) y desde ahí se pueden
- * configurar notificaciones por email sin tocar código. Requiere el
- * formulario espejo declarado en `index.html`.
- */
+/** Envía el lead como JSON a la Vercel Edge Function configurada en `VITE_LEADS_API_URL`. */
 export async function submitLead(payload: LeadPayload): Promise<void> {
+  if (!LEADS_URL) {
+    throw new LeadSubmitError('VITE_LEADS_API_URL no está configurada.');
+  }
+
   let response: Response;
   try {
-    response = LEADS_URL
-      ? await fetch(LEADS_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({ ...payload, source: 'landing', submittedAt: new Date().toISOString() }),
-        })
-      : await submitToNetlifyForms('contacto', {
-          name: payload.name,
-          email: payload.email,
-          phone: payload.phone,
-          intent: payload.intent,
-          location: payload.location,
-          message: payload.message ?? '',
-          consent: String(payload.consent),
-        });
+    response = await fetch(LEADS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ ...payload, source: 'landing', submittedAt: new Date().toISOString() }),
+    });
   } catch (cause) {
     throw new LeadSubmitError(
       'No hemos podido conectar con el servidor. Probá de nuevo o escribinos por WhatsApp.',

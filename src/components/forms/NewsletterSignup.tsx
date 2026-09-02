@@ -2,7 +2,6 @@ import { useId, useState } from 'react';
 import { CheckCircle2, Loader2, Mail } from 'lucide-react';
 
 import { cn } from '@/lib/cn';
-import { submitToNetlifyForms } from '@/lib/netlifyForms';
 
 type Status = 'idle' | 'loading' | 'success' | 'error';
 
@@ -13,9 +12,8 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  * que sí se justifica en `ValuationForm` (múltiples campos, reglas de negocio).
  * Aquí alcanza con `useState` — YAGNI.
  *
- * Sin backend propio: reutiliza `VITE_LEADS_API_URL` si está configurado
- * (mismo endpoint que el formulario principal, con `intent: 'newsletter'`);
- * si no, usa Netlify Forms (formulario espejo "newsletter" en index.html).
+ * Reutiliza `VITE_LEADS_API_URL` (mismo endpoint que el formulario principal,
+ * con `intent: 'newsletter'`).
  */
 export function NewsletterSignup() {
   const [email, setEmail] = useState('');
@@ -30,16 +28,18 @@ export function NewsletterSignup() {
       setStatus('error');
       return;
     }
+    if (!endpoint) {
+      setStatus('error');
+      return;
+    }
 
     setStatus('loading');
     try {
-      const response = endpoint
-        ? await fetch(endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, intent: 'newsletter', source: 'footer' }),
-          })
-        : await submitToNetlifyForms('newsletter', { email });
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, intent: 'newsletter', source: 'footer' }),
+      });
       if (!response.ok) throw new Error('request failed');
       setStatus('success');
       setEmail('');
