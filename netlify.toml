@@ -1,3 +1,13 @@
 [build]
   command = "npm run build"
   publish = "dist"
+
+# Canonical host: cini.com.ar (sin www). Sin este redirect, www.cini.com.ar y
+# cini.com.ar servían el mismo contenido como dos URLs distintas — contenido
+# duplicado real, además del canonical roto que apuntaba a un dominio
+# .example inexistente (ver src/data/site.ts).
+[[redirects]]
+  from = "https://www.cini.com.ar/*"
+  to = "https://cini.com.ar/:splat"
+  status = 301
+  force = true
