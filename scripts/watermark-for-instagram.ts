@@ -81,7 +81,11 @@ function buildCoverSvg(prop: Property, width: number, height: number): Buffer {
   const neighborhoodSize = neighborhood.length > 16 ? 50 : 66;
   const eyebrow = prop.status === 'alquiler' ? 'EN ALQUILER' : 'EN VENTA';
   const subtitle = escapeXml(coverSubtitle(prop));
-  const price = escapeXml(formatPrice(prop.price, prop.currency) + (prop.status === 'alquiler' ? '/mes' : ''));
+  const price = escapeXml(
+    prop.price > 0
+      ? formatPrice(prop.price, prop.currency) + (prop.status === 'alquiler' ? '/mes' : '')
+      : 'Consultar precio',
+  );
   const address = escapeXml(prop.address);
 
   // Bloque central compuesto de arriba hacia abajo con gaps fijos entre
