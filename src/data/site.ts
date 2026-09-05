@@ -20,26 +20,24 @@ export const SITE = {
   whatsappMessage:
     'Hola, vengo desde la web de Consultora Internacional y me gustaría recibir información sobre una propiedad.',
 
-  // TODO(01-sep-2026): reemplazar por contacto@cini.com.ar una vez que el
-  // cliente confirme que esa casilla existe y está monitoreada — hasta
-  // entonces, dejar el placeholder es menos riesgoso que publicar un email
-  // real que todavía nadie lee. Ver auditoría: el placeholder .example
-  // rompía el mailto: y el canonical/OG a la vez; esto solo arregla lo
-  // segundo.
-  email: 'hola@consultora-internacional.example',
+  email: 'contactos@cini.com.ar',
+  /** Contacto directo de Mauro Otranto, además de la casilla institucional. */
+  mauroEmail: 'maurootranto@yahoo.com.ar',
+  mauroPhone: '+54 11 6023-7430',
+  mauroPhoneHref: 'tel:+541160237430',
   /** Dirección real de la oficina (PB = planta baja). */
   address: 'Blanco Encalada 1583, PB, Belgrano, CABA',
   city: 'Buenos Aires',
   schedule: 'Lun a Vie · 9:00 – 18:30',
 
-  /** Dominio canónico real. Sin www — ver redirect 301 en netlify.toml. */
+  /** Dominio canónico real. Sin www — ver redirect 301 en vercel.json. */
   url: 'https://cini.com.ar',
 
   /** Centro por defecto del mapa: oficina real en Blanco Encalada 1583, Belgrano (geocodificado). */
   mapCenter: { lat: -34.5543833, lng: -58.4511371 },
 
   social: {
-    instagram: 'https://instagram.com/',
+    instagram: 'https://instagram.com/cini.propiedades',
     linkedin: 'https://linkedin.com/',
   },
 
