@@ -12,9 +12,6 @@ export const SITE = {
   tagline: 'Negocios Inmobiliarios y Financieros',
   claim: 'Vendemos casas que no se anuncian en portales.',
 
-  /** Línea fija real de la oficina. */
-  phone: '+54 11 4706-2034',
-  phoneHref: 'tel:+541147062034',
   /** Celular real (formato local 15-6023-7430) → wa.me: país 54 + 9 (móvil AR) + área 11 + número. */
   whatsapp: '5491160237430',
   whatsappMessage:
@@ -25,20 +22,17 @@ export const SITE = {
   mauroEmail: 'maurootranto@yahoo.com.ar',
   mauroPhone: '+54 11 6023-7430',
   mauroPhoneHref: 'tel:+541160237430',
-  /** Dirección real de la oficina (PB = planta baja). */
-  address: 'Blanco Encalada 1583, PB, Belgrano, CABA',
   city: 'Buenos Aires',
   schedule: 'Lun a Vie · 9:00 – 18:30',
 
   /** Dominio canónico real. Sin www — ver redirect 301 en vercel.json. */
   url: 'https://cini.com.ar',
 
-  /** Centro por defecto del mapa: oficina real en Blanco Encalada 1583, Belgrano (geocodificado). */
+  /** Centro por defecto del mapa cuando todavía no hay propiedades cargadas (punto de referencia en CABA, ya no ligado a una oficina real). */
   mapCenter: { lat: -34.5543833, lng: -58.4511371 },
 
   social: {
     instagram: 'https://instagram.com/cini.propiedades',
-    linkedin: 'https://linkedin.com/',
   },
 
   /** 60 años de trayectoria real de Mauro Otranto — año de inicio calculado desde ahí. */

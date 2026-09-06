@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { motion } from 'motion/react';
-import { Clock, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
+import { Clock, Mail, MessageCircle, Phone } from 'lucide-react';
 
 import { Container } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
@@ -19,9 +19,9 @@ const ValuationForm = lazy(() =>
 );
 
 const CONTACT_ITEMS = [
-  { icon: Phone, label: 'Teléfono', value: SITE.phone, href: SITE.phoneHref },
   { icon: Mail, label: 'Email', value: SITE.email, href: `mailto:${SITE.email}` },
-  { icon: MapPin, label: 'Oficina', value: SITE.address },
+  { icon: Mail, label: 'Email (Mauro Otranto)', value: SITE.mauroEmail, href: `mailto:${SITE.mauroEmail}` },
+  { icon: Phone, label: 'Celular (Mauro Otranto)', value: SITE.mauroPhone, href: SITE.mauroPhoneHref },
   { icon: Clock, label: 'Horario', value: SITE.schedule },
 ] as const;
 

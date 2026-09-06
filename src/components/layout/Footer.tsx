@@ -1,4 +1,4 @@
-import { Instagram, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
+import { Instagram, Mail, Phone } from 'lucide-react';
 
 import { NewsletterSignup } from '@/components/forms/NewsletterSignup';
 import { Container } from '@/components/ui/Container';
@@ -41,15 +41,6 @@ export function Footer() {
               >
                 <Instagram className="size-4" aria-hidden />
               </a>
-              <a
-                href={SITE.social.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-                className="grid size-10 place-items-center rounded-full border border-sand-50/15 text-sand-200 transition-colors duration-300 hover:border-gold-400/60 hover:text-gold-300"
-              >
-                <Linkedin className="size-4" aria-hidden />
-              </a>
             </div>
           </div>
 
@@ -83,13 +74,9 @@ export function Footer() {
             </p>
             <ul className="mt-5 space-y-4 text-sm text-sand-300/75">
               <li className="flex gap-3">
-                <MapPin className="mt-0.5 size-4 shrink-0 text-gold-400" aria-hidden />
-                <span>{SITE.address}</span>
-              </li>
-              <li className="flex gap-3">
                 <Phone className="mt-0.5 size-4 shrink-0 text-gold-400" aria-hidden />
-                <a href={SITE.phoneHref} className="transition-colors hover:text-sand-50">
-                  {SITE.phone}
+                <a href={SITE.mauroPhoneHref} className="transition-colors hover:text-sand-50">
+                  {SITE.mauroPhone}
                 </a>
               </li>
               <li className="flex gap-3">
@@ -99,6 +86,15 @@ export function Footer() {
                   className="break-all transition-colors hover:text-sand-50"
                 >
                   {SITE.email}
+                </a>
+              </li>
+              <li className="flex gap-3">
+                <Mail className="mt-0.5 size-4 shrink-0 text-gold-400" aria-hidden />
+                <a
+                  href={`mailto:${SITE.mauroEmail}`}
+                  className="break-all transition-colors hover:text-sand-50"
+                >
+                  {SITE.mauroEmail}
                 </a>
               </li>
               <li className="pl-7 text-sand-400/70">{SITE.schedule}</li>

@@ -114,7 +114,7 @@ export default async function handler(req: Request): Promise<Response> {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: 'Consultora Internacional <notificaciones@eltanodesign.com.ar>',
+      from: 'Consultora Internacional <notificaciones@cini.com.ar>',
       to: [notifyEmail],
       reply_to: email,
       subject: isNewsletter ? `Nueva alta de newsletter — ${email}` : `Nuevo lead: ${intentLabel} — ${name}`,

@@ -102,14 +102,14 @@ export function Header() {
         {/* Acciones */}
         <div className="flex items-center gap-2">
           <a
-            href={SITE.phoneHref}
+            href={SITE.mauroPhoneHref}
             className={cn(
               'hidden items-center gap-2 rounded-full px-4 py-2 text-sm transition-colors duration-300 md:inline-flex',
               solid ? 'text-ink-700 hover:text-ink-950' : 'text-sand-100/85 hover:text-white',
             )}
           >
             <Phone className="size-4" aria-hidden />
-            {SITE.phone}
+            {SITE.mauroPhone}
           </a>
 
           <Button
@@ -167,11 +167,11 @@ export function Header() {
                 Quiero vender
               </Button>
               <a
-                href={SITE.phoneHref}
+                href={SITE.mauroPhoneHref}
                 className="mt-1 inline-flex items-center justify-center gap-2 py-2 text-sm text-ink-600"
               >
                 <Phone className="size-4" aria-hidden />
-                {SITE.phone}
+                {SITE.mauroPhone}
               </a>
             </Container>
           </motion.div>

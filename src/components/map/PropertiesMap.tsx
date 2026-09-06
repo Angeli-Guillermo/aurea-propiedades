@@ -217,15 +217,6 @@ function MapNotice({ variant }: { variant: 'missing-key' | 'load-error' }) {
             </>
           )}
         </p>
-        <a
-          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(SITE.address)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-gold-600 underline underline-offset-4 transition-colors hover:text-gold-700"
-        >
-          Ver la oficina en Google Maps
-          <ArrowUpRight className="size-4" aria-hidden />
-        </a>
       </div>
     </div>
   );
