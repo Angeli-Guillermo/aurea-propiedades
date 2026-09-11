@@ -189,15 +189,26 @@ function parseListing(html, url) {
     return m ? Number(m[1]) : undefined;
   };
 
-  const usdMatch = html.match(/USD\s?([\d.,]+)/);
-  const price = usdMatch ? Number(usdMatch[1].replace(/[.,]/g, '')) : undefined;
-  const opType = /alquiler\s+USD/i.test(html) ? 'alquiler' : 'venta';
-
   // "..., Capital Federal Zonaprop,{Categoría},{Comprar|Alquilar},Capital Federal,{barrios...}"
   // — un único patrón cubre venta y alquiler, a diferencia de buscar solo ",Comprar,".
   const catMatch = keywords.match(/Capital Federal Zonaprop,([^,]+),(Comprar|Alquilar),/i);
   const categoria = catMatch ? catMatch[1].trim().toLowerCase() : '';
   const type = TYPE_MAP[categoria] ?? 'piso';
+  // La operación sale de acá (no de si el precio dice "USD"): la mayoría de las
+  // ventas están en dólares pero algunos alquileres se publican en pesos, sin
+  // la palabra "USD" en ningún lado de la página.
+  const opType = catMatch && /alquilar/i.test(catMatch[2]) ? 'alquiler' : 'venta';
+
+  const usdMatch = html.match(/USD\s?([\d.,]+)/);
+  // Fallback para avisos en pesos (alquileres, sobre todo): mismo contenedor
+  // que ya usa `parseExpenses` para "Expensas $ ...", pero con el precio solo.
+  const arsMatch = html.match(/class="price-items-container">\s*<[^>]*>\s*\$\s*([\d.,]+)/i);
+  const price = usdMatch
+    ? Number(usdMatch[1].replace(/[.,]/g, ''))
+    : arsMatch
+      ? Number(arsMatch[1].replace(/[.,]/g, ''))
+      : undefined;
+  const currency = usdMatch ? 'USD' : 'ARS';
 
   // La dirección completa vive en un único <h4>: "Calle Número,  Barrio, Ciudad/Barrio padre".
   const h4Match = html.match(/<h4[^>]*>([^<]{5,150})<\/h4>/);
@@ -224,6 +235,7 @@ function parseListing(html, url) {
     title,
     description,
     price,
+    currency,
     status: opType,
     type,
     neighborhood,
@@ -284,7 +296,7 @@ function toFileContent(properties) {
         `title: ${JSON.stringify(p.title)}`,
         `description: ${JSON.stringify(p.description)}`,
         `price: ${p.price ?? 0}`,
-        `currency: 'USD'`,
+        `currency: '${p.currency ?? 'USD'}'`,
         `status: '${p.status}'`,
         `type: '${p.type}'`,
         `neighborhood: ${JSON.stringify(p.neighborhood)}`,
