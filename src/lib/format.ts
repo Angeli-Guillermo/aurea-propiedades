@@ -27,7 +27,7 @@ export function formatPrice(value: number, currency = 'USD'): string {
  * 1850000 → "US$ 1,85 M" · 520000 → "US$ 520 mil"
  */
 export function formatPriceCompact(value: number, currency = 'USD'): string {
-  const symbol = currency === 'USD' ? 'US$' : currency;
+  const symbol = currency === 'USD' ? 'US$' : '$';
   if (value >= 1_000_000) {
     const millions = value / 1_000_000;
     const decimals = Number.isInteger(millions) ? 0 : 2;
