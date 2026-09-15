@@ -26,7 +26,7 @@ import { spawn } from 'node:child_process';
 import { mkdir, mkdtemp, readFile, writeFile, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -58,7 +58,7 @@ const TYPE_LABELS = {
 
 function run(cmd, args) {
   return new Promise((resolvePromise, reject) => {
-    const child = spawn(cmd, args, { stdio: ['ignore', 'ignore', 'pipe'] });
+    const child = spawn(cmd, args, { cwd: ROOT, stdio: ['ignore', 'ignore', 'pipe'] });
     let stderr = '';
     child.stderr.on('data', (d) => (stderr += d));
     child.on('error', reject);
@@ -100,7 +100,7 @@ async function loadProperties() {
   const srcPath = join(ROOT, 'src', 'data', 'properties.mock.ts');
   const raw = await readFile(srcPath, 'utf8');
   const js = raw
-    .replace(/^import type .+\n/m, '')
+    .replace(/^import type .+\r?\n/m, '')
     .replace(/:\s*Property\[\]/, '');
   const tmpFile = join(tmpdir(), `properties.mock.${Date.now()}.mjs`);
   await writeFile(tmpFile, js, 'utf8');
@@ -110,6 +110,15 @@ async function loadProperties() {
   } finally {
     await rm(tmpFile, { force: true });
   }
+}
+
+/** Convierte una ruta absoluta en relativa a ROOT para usarla dentro de un
+ *  filtro de ffmpeg (p.ej. `fontfile=...`). En Windows los dos puntos de la
+ *  unidad (`C:`) chocan con el separador de opciones del filtro sin importar
+ *  cómo se los escape, así que evitamos el problema de raíz: rutas relativas
+ *  (sin unidad) resueltas contra el `cwd: ROOT` que le pasamos a `run()`. */
+function escFilterPath(absPath) {
+  return relative(ROOT, absPath).replace(/\\/g, '/');
 }
 
 /** Escapa texto para usarlo dentro de `drawtext=text='...'` de ffmpeg. */
@@ -157,7 +166,8 @@ async function downloadPhotos(property, dir) {
   return paths;
 }
 
-function buildPhotoFilter({ font, badge, address, price, specs }) {
+function buildPhotoFilter({ font: rawFont, badge, address, price, specs }) {
+  const font = escFilterPath(rawFont);
   const frames = Math.round(PHOTO_SECONDS * FPS);
   const box = (color) => `box=1:boxcolor=${color}:boxborderw=16`;
   return [
@@ -194,7 +204,8 @@ async function buildPhotoClip(photoPath, outPath, texts, font) {
  * (favicon.svg / foto de perfil de Instagram), nombre, y la web como el dato
  * más grande de la placa — es lo único que alguien necesita recordar.
  */
-async function buildOutroClip(outPath, font, logo) {
+async function buildOutroClip(outPath, rawFont, logo) {
+  const font = escFilterPath(rawFont);
   const logoSize = 260;
   const logoY = 620;
   const filter = [
