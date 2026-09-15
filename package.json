@@ -9,7 +9,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "sync-properties": "node scripts/sync-properties.mjs"
+    "sync-properties": "node scripts/sync-properties.mjs",
+    "generate-videos": "node scripts/generate-videos.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
