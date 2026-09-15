@@ -12,7 +12,8 @@
  *   1. Descarga hasta MAX_PHOTOS fotos de su galería (`gallery` en properties.mock.ts).
  *   2. A cada foto le aplica un zoom lento (Ken Burns), la recorta a 1080x1920
  *      y le superpone barrio/tipo, dirección, precio y specs (dorm/baños/m²).
- *   3. Le agrega un cierre de marca (Consultora Internacional + teléfono).
+ *   3. Le agrega un cierre de marca fijo: el isologo real (`public/brand/logo-mark.png`,
+ *      el mismo círculo dorado de favicon.svg / Instagram), nombre y la web bien grande.
  *   4. Concatena todo (sin recodificar) en `dist/videos/<slug>.mp4`.
  *
  * Requiere `ffmpeg` en el PATH y conexión a internet (a los CDN de las fotos
@@ -31,6 +32,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
 const OUT_DIR = join(ROOT, 'dist', 'videos');
+const LOGO_PATH = join(ROOT, 'public', 'brand', 'logo-mark.png');
 const FONT_CACHE = join(ROOT, 'dist', '.cache', 'Inter.ttf');
 const FONT_URL =
   'https://raw.githubusercontent.com/google/fonts/main/ofl/inter/Inter%5Bopsz,wght%5D.ttf';
@@ -187,17 +189,28 @@ async function buildPhotoClip(photoPath, outPath, texts, font) {
   ]);
 }
 
-async function buildOutroClip(outPath, font) {
+/**
+ * Placa de cierre fija, igual en los ocho videos: el isologo real del sitio
+ * (favicon.svg / foto de perfil de Instagram), nombre, y la web como el dato
+ * más grande de la placa — es lo único que alguien necesita recordar.
+ */
+async function buildOutroClip(outPath, font, logo) {
+  const logoSize = 260;
+  const logoY = 620;
   const filter = [
-    `drawtext=fontfile=${font}:text='Consultora Internacional':fontcolor=0xf5f2ec:fontsize=52:x=(w-text_w)/2:y=(h/2)-80`,
-    `drawtext=fontfile=${font}:text='Negocios inmobiliarios y financieros':fontcolor=0xb3c3d3:fontsize=28:x=(w-text_w)/2:y=(h/2)-10`,
-    `drawtext=fontfile=${font}:text='+54 11 6023-7430  ·  cini.com.ar':fontcolor=0xdcc493:fontsize=30:x=(w-text_w)/2:y=(h/2)+58`,
+    `[1:v]scale=${logoSize}:${logoSize}[logo]`,
+    `[0:v][logo]overlay=(main_w-overlay_w)/2:${logoY}`,
+    `drawtext=fontfile=${font}:text='Consultora Internacional':fontcolor=0xf5f2ec:fontsize=50:x=(w-text_w)/2:y=${logoY + logoSize + 40}`,
+    `drawtext=fontfile=${font}:text='Negocios inmobiliarios y financieros':fontcolor=0xb3c3d3:fontsize=26:x=(w-text_w)/2:y=${logoY + logoSize + 106}`,
+    `drawtext=fontfile=${font}:text='cini.com.ar':fontcolor=0xdcc493:fontsize=64:x=(w-text_w)/2:y=${logoY + logoSize + 172}`,
+    `drawtext=fontfile=${font}:text='+54 11 6023-7430':fontcolor=0x7d97b3:fontsize=28:x=(w-text_w)/2:y=${logoY + logoSize + 258}`,
   ].join(',');
   await run('ffmpeg', [
     '-y',
     '-f', 'lavfi',
     '-i', `color=c=0x0f1c2e:s=${WIDTH}x${HEIGHT}:d=${OUTRO_SECONDS}`,
-    '-vf', filter,
+    '-i', logo,
+    '-filter_complex', filter,
     '-r', String(FPS),
     '-pix_fmt', 'yuv420p',
     '-an',
@@ -212,7 +225,7 @@ async function concatClips(clipPaths, outPath, workDir) {
   await run('ffmpeg', ['-y', '-f', 'concat', '-safe', '0', '-i', listPath, '-c', 'copy', outPath]);
 }
 
-async function generateOne(property, font) {
+async function generateOne(property, font, logo) {
   const label = property.slug ?? property.id;
   console.log(`\n🎬 ${property.title} (${label})`);
 
@@ -244,7 +257,7 @@ async function generateOne(property, font) {
     }
 
     const outroPath = join(workDir, 'outro.mp4');
-    await buildOutroClip(outroPath, font);
+    await buildOutroClip(outroPath, font, logo);
     clipPaths.push(outroPath);
 
     await mkdir(OUT_DIR, { recursive: true });
@@ -260,6 +273,10 @@ async function generateOne(property, font) {
 
 async function main() {
   await checkFfmpeg();
+  if (!existsSync(LOGO_PATH)) {
+    console.error(`❌ No se encontró el isologo en ${LOGO_PATH}.`);
+    process.exit(1);
+  }
   const font = await ensureFont();
   const all = await loadProperties();
 
@@ -275,7 +292,7 @@ async function main() {
 
   console.log(`Generando ${filtered.length} video(s) en ${OUT_DIR}…`);
   for (const property of filtered) {
-    await generateOne(property, font);
+    await generateOne(property, font, LOGO_PATH);
   }
   console.log('\n✅ Listo.');
 }
