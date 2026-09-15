@@ -23,6 +23,7 @@
  */
 
 import { spawn } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { mkdir, mkdtemp, readFile, writeFile, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -147,16 +148,28 @@ function specsLine(p) {
   return parts.join('  ·  ');
 }
 
+/** Algunas fichas de ZonaProp repiten el mismo archivo de foto dos veces en
+ *  la galería (visto en la práctica, no es solo teórico). Recorre TODA la
+ *  galería —no solo los primeros MAX_PHOTOS— y descarta por hash de
+ *  contenido cualquier descarga idéntica a una ya guardada, así los
+ *  MAX_PHOTOS que terminan en el video son todos distintos entre sí. */
 async function downloadPhotos(property, dir) {
-  const urls = (property.gallery ?? []).slice(0, MAX_PHOTOS);
+  const urls = property.gallery ?? [];
   const paths = [];
-  for (let i = 0; i < urls.length; i++) {
+  const seenHashes = new Set();
+  for (let i = 0; i < urls.length && paths.length < MAX_PHOTOS; i++) {
     const url = urls[i];
     try {
       const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const buf = Buffer.from(await res.arrayBuffer());
-      const path = join(dir, `${String(i).padStart(2, '0')}.jpg`);
+      const hash = createHash('sha1').update(buf).digest('hex');
+      if (seenHashes.has(hash)) {
+        console.warn(`   ⚠️  Foto ${i + 1} es idéntica a otra ya descargada — se omite.`);
+        continue;
+      }
+      seenHashes.add(hash);
+      const path = join(dir, `${String(paths.length).padStart(2, '0')}.jpg`);
       await writeFile(path, buf);
       paths.push(path);
     } catch (err) {
@@ -166,14 +179,20 @@ async function downloadPhotos(property, dir) {
   return paths;
 }
 
+/**
+ * La mayoría de las fotos de ZonaProp son horizontales (o casi cuadradas) y
+ * el video es vertical 9:16. Recortar directo al centro (como se hacía antes)
+ * blanqueaba el contexto de la foto —a veces dejaba solo una esquina de piso
+ * y pared, borrosa por el estirado— y de paso hacía que fotos distintas
+ * terminaran pareciendo la misma habitación genérica una y otra vez.
+ * Ahora se ve la foto COMPLETA (sin recortar) centrada sobre un fondo de la
+ * misma foto, desenfocado y oscurecido, que rellena el resto del cuadro.
+ */
 function buildPhotoFilter({ font: rawFont, badge, address, price, specs }) {
   const font = escFilterPath(rawFont);
   const frames = Math.round(PHOTO_SECONDS * FPS);
   const box = (color) => `box=1:boxcolor=${color}:boxborderw=16`;
-  return [
-    `scale=${WIDTH}:${HEIGHT}:force_original_aspect_ratio=increase`,
-    `crop=${WIDTH}:${HEIGHT}`,
-    `zoompan=z='min(zoom+0.0008,1.15)':d=${frames}:s=${WIDTH}x${HEIGHT}:fps=${FPS}`,
+  const texts = [
     `drawtext=fontfile=${font}:text='${escText(badge)}':fontcolor=white:fontsize=32:x=48:y=90:box=1:boxcolor=black@0.35:boxborderw=14`,
     `drawtext=fontfile=${font}:text='${escText(address)}':fontcolor=white:fontsize=38:x=48:y=h-266:${box('0x0f1c2e@0.6')}`,
     `drawtext=fontfile=${font}:text='${escText(price)}':fontcolor=0xdcc493:fontsize=54:x=48:y=h-200:${box('0x0f1c2e@0.6')}`,
@@ -183,6 +202,14 @@ function buildPhotoFilter({ font: rawFont, badge, address, price, specs }) {
   ]
     .filter(Boolean)
     .join(',');
+  return (
+    `[0:v]split=2[bg][fg];` +
+    `[bg]scale=${WIDTH}:${HEIGHT}:force_original_aspect_ratio=increase,crop=${WIDTH}:${HEIGHT},gblur=sigma=40,eq=brightness=-0.08[bg2];` +
+    `[fg]scale=${WIDTH}:${HEIGHT}:force_original_aspect_ratio=decrease[fg2];` +
+    `[bg2][fg2]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/2,` +
+    `zoompan=z='min(zoom+0.0008,1.15)':d=${frames}:s=${WIDTH}x${HEIGHT}:fps=${FPS},` +
+    texts
+  );
 }
 
 async function buildPhotoClip(photoPath, outPath, texts, font) {
@@ -191,7 +218,7 @@ async function buildPhotoClip(photoPath, outPath, texts, font) {
     '-loop', '1',
     '-i', photoPath,
     '-t', String(PHOTO_SECONDS),
-    '-vf', buildPhotoFilter({ font, ...texts }),
+    '-filter_complex', buildPhotoFilter({ font, ...texts }),
     '-r', String(FPS),
     '-pix_fmt', 'yuv420p',
     '-an',
