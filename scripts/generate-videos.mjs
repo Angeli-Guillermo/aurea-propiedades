@@ -57,6 +57,19 @@ const TYPE_LABELS = {
   cochera: 'Cochera',
 };
 
+/** Alguna que otra galería de ZonaProp mete, entre las fotos reales, una
+ *  captura de pantalla (Street View, plano catastral) que se nota a la
+ *  legua en un video. No hay forma confiable de detectar eso por código sin
+ *  clasificar la imagen, así que se resuelve a mano, foto por foto, acá. */
+const EXCLUDED_PHOTO_URLS = new Set([
+  // villa-real-lote-de-147-m-apto-para-463: captura de Google Street View
+  // (con la barra de estado del celular) y dos recortes del mismo plano
+  // catastral — no son fotos.
+  'https://imgar.zonapropcdn.com/avisos/resize/1/00/47/02/79/12/1200x1200/1747943771.jpg',
+  'https://imgar.zonapropcdn.com/avisos/resize/1/00/47/02/79/12/1200x1200/1747943770.jpg',
+  'https://imgar.zonapropcdn.com/avisos/resize/1/00/47/02/79/12/1200x1200/1747943769.jpg',
+]);
+
 function run(cmd, args) {
   return new Promise((resolvePromise, reject) => {
     const child = spawn(cmd, args, { cwd: ROOT, stdio: ['ignore', 'ignore', 'pipe'] });
@@ -159,6 +172,7 @@ async function downloadPhotos(property, dir) {
   const seenHashes = new Set();
   for (let i = 0; i < urls.length && paths.length < MAX_PHOTOS; i++) {
     const url = urls[i];
+    if (EXCLUDED_PHOTO_URLS.has(url)) continue;
     try {
       const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
