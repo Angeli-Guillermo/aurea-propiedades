@@ -19,12 +19,34 @@ export function Hero() {
       id="inicio"
       className="grain relative flex min-h-[100svh] items-end overflow-hidden bg-ink-950"
     >
-      {/* 02-sep-2026: se sacó la foto de stock (Unsplash) del hero sin
-          reemplazo — no hay una foto real disponible todavía (sin oficina
-          propia fotografiable). El fondo queda en bg-ink-950 sólido, ya
-          declarado en el <section>; las capas de degradado que existían acá
-          solo compensaban zonas claras de esa foto y no aportan nada sobre
-          un color plano. */}
+      {/* 20-sep-2026: fondo ambiente en video (Veo 3.1 vía Google Flow),
+          reemplaza el bg-ink-950 sólido que quedó tras sacar la foto stock
+          el 02-sep. Mismo patrón que hero-ambient.mp4 en LexAlert: video
+          sobre poster de fallback, opacity-40, motion-reduce:hidden.
+          dangerouslySetInnerHTML porque React omite el atributo `muted` en
+          SSR y Chrome bloquea el autoplay sin él. */}
+      <img
+        src="/hero-ambient-poster.jpg"
+        alt=""
+        aria-hidden
+        className="absolute inset-0 size-full object-cover opacity-40"
+      />
+      <div
+        aria-hidden
+        className="motion-reduce:hidden"
+        dangerouslySetInnerHTML={{
+          __html: `<video
+            src="/hero-ambient.mp4"
+            poster="/hero-ambient-poster.jpg"
+            autoplay
+            loop
+            muted
+            playsinline
+            class="absolute inset-0 size-full object-cover opacity-40"
+          ></video>`,
+        }}
+      />
+      <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/40 to-ink-950/10" />
 
       <Container size="wide" className="relative z-10 pb-20 pt-36 lg:pb-28">
         <motion.div
