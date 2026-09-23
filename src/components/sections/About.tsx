@@ -85,7 +85,7 @@ export function About() {
           initial="hidden"
           whileInView="visible"
           viewport={VIEWPORT_ONCE}
-          className="mt-32 grid gap-8 sm:grid-cols-2 sm:max-w-2xl sm:mx-auto lg:max-w-none lg:mx-0"
+          className="mt-32 grid gap-8 sm:grid-cols-2 sm:max-w-2xl sm:mx-auto"
         >
           {TEAM.map((member) => (
             <motion.article key={member.name} variants={staggerItem} className="group">
