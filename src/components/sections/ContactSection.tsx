@@ -22,6 +22,7 @@ const CONTACT_ITEMS = [
   { icon: Mail, label: 'Email', value: SITE.email, href: `mailto:${SITE.email}` },
   { icon: Mail, label: 'Email (Mauro Otranto)', value: SITE.mauroEmail, href: `mailto:${SITE.mauroEmail}` },
   { icon: Phone, label: 'Celular (Mauro Otranto)', value: SITE.mauroPhone, href: SITE.mauroPhoneHref },
+  { icon: Phone, label: 'Celular (Vanina Cesari)', value: SITE.vaninaPhone, href: SITE.vaninaPhoneHref },
   { icon: Clock, label: 'Horario', value: SITE.schedule },
 ] as const;
 
