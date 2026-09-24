@@ -9,10 +9,12 @@ import {
   CalendarDays,
   ChevronLeft,
   ChevronRight,
+  Copy,
   LandPlot,
   LayoutGrid,
   MapPin,
   Maximize,
+  Share2,
   Wallet,
   X,
   ZoomIn,
@@ -30,13 +32,16 @@ import { PROPERTY_TYPE_LABELS, type Property } from '@/types/property';
 
 interface PropertyModalProps {
   property: Property | null;
+  /** URL con `?propiedad=<id>` — null hasta que `usePropertyModal` resuelve una selección. */
+  shareUrl: string | null;
   onClose: () => void;
 }
 
 /** Ficha completa de la propiedad seleccionada. */
-export function PropertyModal({ property, onClose }: PropertyModalProps) {
+export function PropertyModal({ property, shareUrl, onClose }: PropertyModalProps) {
   const [activeImage, setActiveImage] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   // Guardamos la última propiedad para que la animación de salida siga
   // teniendo contenido que renderizar mientras el modal se cierra.
@@ -48,7 +53,30 @@ export function PropertyModal({ property, onClose }: PropertyModalProps) {
   useEffect(() => {
     setActiveImage(0);
     setIsLightboxOpen(false);
+    setCopied(false);
   }, [property?.id]);
+
+  // Web Share API en mobile (hoja nativa) — en desktop, sin soporte habitual,
+  // copiamos el link al portapapeles como alternativa directa.
+  const handleShare = async () => {
+    if (!shareUrl || !data) return;
+    const shareData = { title: data.title, text: `${data.title} — ${data.neighborhood}`, url: shareUrl };
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch {
+        // AbortError si el usuario cierra la hoja de compartir sin elegir nada — no es un error real.
+      }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Sin permiso de portapapeles: el link sigue disponible en la barra de direcciones.
+    }
+  };
 
   const gallery = data ? (data.gallery.length > 0 ? data.gallery : [data.image]) : [];
   const goToPrev = () => setActiveImage((index) => (index - 1 + gallery.length) % gallery.length);
@@ -139,6 +167,16 @@ export function PropertyModal({ property, onClose }: PropertyModalProps) {
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
+        {/* A la izquierda del botón de cerrar del Modal (right-4 top-4 size-10) */}
+        <button
+          type="button"
+          onClick={() => void handleShare()}
+          aria-label={copied ? 'Link copiado' : 'Compartir esta propiedad'}
+          className="absolute right-[4.25rem] top-4 z-10 grid size-10 place-items-center rounded-full bg-sand-50/90 text-ink-800 shadow-soft backdrop-blur-sm transition-colors duration-200 hover:bg-white hover:text-ink-950"
+        >
+          {copied ? <Copy className="size-5 text-gold-600" aria-hidden /> : <Share2 className="size-5" aria-hidden />}
+        </button>
+
         <button
           type="button"
           onClick={() => setIsLightboxOpen(true)}

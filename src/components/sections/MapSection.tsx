@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'motion/react';
 
@@ -8,8 +8,8 @@ import { Container } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { useInViewOnce } from '@/hooks/useInViewOnce';
+import { usePropertyModal } from '@/hooks/usePropertyModal';
 import { fadeUp, VIEWPORT_ONCE } from '@/lib/motion';
-import type { Property } from '@/types/property';
 
 /**
  * El SDK de Google Maps pesa varios cientos de kB. Lo cargamos en un chunk
@@ -20,9 +20,9 @@ const PropertiesMap = lazy(() => import('@/components/map/PropertiesMap'));
 export function MapSection() {
   const { data, isPending } = useQuery(propertiesQueryOptions);
   const { ref, inView } = useInViewOnce<HTMLDivElement>('300px');
-  const [selected, setSelected] = useState<Property | null>(null);
 
   const properties = data ?? [];
+  const { selected, select, close, shareUrl } = usePropertyModal(properties);
   const shouldRenderMap = inView && !isPending;
 
   return (
@@ -46,7 +46,7 @@ export function MapSection() {
           <div className="h-[26rem] w-full sm:h-[32rem] lg:h-[38rem]">
             {shouldRenderMap ? (
               <Suspense fallback={<MapSkeleton />}>
-                <PropertiesMap properties={properties} onSelect={setSelected} />
+                <PropertiesMap properties={properties} onSelect={select} />
               </Suspense>
             ) : (
               <MapSkeleton />
@@ -61,7 +61,7 @@ export function MapSection() {
         </p>
       </Container>
 
-      <PropertyModal property={selected} onClose={() => setSelected(null)} />
+      <PropertyModal property={selected} shareUrl={shareUrl} onClose={close} />
     </section>
   );
 }

@@ -11,12 +11,12 @@ import { PropertyModal } from '@/components/properties/PropertyModal';
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
+import { usePropertyModal } from '@/hooks/usePropertyModal';
 import { staggerContainer, VIEWPORT_ONCE } from '@/lib/motion';
 import {
   applyPropertyFilters,
   DEFAULT_FILTERS,
   getNeighborhoods,
-  type Property,
   type PropertyFilters as Filters,
 } from '@/types/property';
 
@@ -32,9 +32,9 @@ export function FeaturedProperties() {
   );
 
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
-  const [selected, setSelected] = useState<Property | null>(null);
 
   const properties = useMemo(() => data ?? [], [data]);
+  const { selected, select, close, shareUrl } = usePropertyModal(properties);
   const neighborhoods = useMemo(() => getNeighborhoods(properties), [properties]);
   const visible = useMemo(
     () => applyPropertyFilters(properties, filters),
@@ -89,7 +89,7 @@ export function FeaturedProperties() {
                 <PropertyCard
                   key={property.id}
                   property={property}
-                  onSelect={setSelected}
+                  onSelect={select}
                   priority={index < 3}
                 />
               ))}
@@ -98,7 +98,7 @@ export function FeaturedProperties() {
         </div>
       </Container>
 
-      <PropertyModal property={selected} onClose={() => setSelected(null)} />
+      <PropertyModal property={selected} shareUrl={shareUrl} onClose={close} />
     </section>
   );
 }

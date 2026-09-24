@@ -111,6 +111,15 @@ export function Header() {
             <Phone className="size-4" aria-hidden />
             {SITE.mauroPhone}
           </a>
+          <a
+            href={SITE.vaninaPhoneHref}
+            className={cn(
+              'hidden rounded-full px-2 py-2 text-sm transition-colors duration-300 md:inline-flex',
+              solid ? 'text-ink-700 hover:text-ink-950' : 'text-sand-100/85 hover:text-white',
+            )}
+          >
+            {SITE.vaninaPhone}
+          </a>
 
           <Button
             variant={solid ? 'primary' : 'light'}
@@ -172,6 +181,12 @@ export function Header() {
               >
                 <Phone className="size-4" aria-hidden />
                 {SITE.mauroPhone}
+              </a>
+              <a
+                href={SITE.vaninaPhoneHref}
+                className="inline-flex items-center justify-center py-2 text-sm text-ink-600"
+              >
+                {SITE.vaninaPhone}
               </a>
             </Container>
           </motion.div>
