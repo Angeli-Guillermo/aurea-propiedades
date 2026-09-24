@@ -80,6 +80,12 @@ export function Footer() {
                 </a>
               </li>
               <li className="flex gap-3">
+                <Phone className="mt-0.5 size-4 shrink-0 text-gold-400" aria-hidden />
+                <a href={SITE.vaninaPhoneHref} className="transition-colors hover:text-sand-50">
+                  {SITE.vaninaPhone}
+                </a>
+              </li>
+              <li className="flex gap-3">
                 <Mail className="mt-0.5 size-4 shrink-0 text-gold-400" aria-hidden />
                 <a
                   href={`mailto:${SITE.email}`}
