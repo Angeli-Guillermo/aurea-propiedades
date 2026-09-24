@@ -22,6 +22,9 @@ export const SITE = {
   mauroEmail: 'maurootranto@yahoo.com.ar',
   mauroPhone: '+54 11 6023-7430',
   mauroPhoneHref: 'tel:+541160237430',
+  /** Contacto directo de Vanina Cesari. */
+  vaninaPhone: '+54 11 6121-1149',
+  vaninaPhoneHref: 'tel:+541161211149',
   city: 'Buenos Aires',
   schedule: 'Lun a Vie · 9:00 – 18:30',
 
