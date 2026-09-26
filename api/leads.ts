@@ -55,6 +55,19 @@ export default async function handler(req: Request): Promise<Response> {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 });
   }
 
+  // Auditoría adversarial 25-sep-2026 (Codex, P1): sin esto, cualquier script
+  // (no solo un browser en el sitio) podía pegarle directo a este endpoint
+  // sin límite, gastando cuota de Resend y saturando la casilla receptora.
+  // Un rate-limit real (por IP/email) necesitaría un store durable (Upstash
+  // Redis u otro) -- no existe hoy en este proyecto, así que esto es una
+  // mitigación de costo cero: exige que el POST venga del propio sitio, lo
+  // que corta el vector de abuso más común (bots pegándole directo a la
+  // URL de la función) sin bloquear el formulario real.
+  const origin = req.headers.get('origin') ?? req.headers.get('referer') ?? '';
+  if (!/^https:\/\/(www\.)?cini\.com\.ar(\/|$)/.test(origin)) {
+    return new Response(JSON.stringify({ error: 'Origen no permitido' }), { status: 403 });
+  }
+
   const apiKey = process.env.RESEND_API_KEY;
   const notifyEmail = process.env.LEADS_NOTIFY_EMAIL;
   if (!apiKey || !notifyEmail) {
