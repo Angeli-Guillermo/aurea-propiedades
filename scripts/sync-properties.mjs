@@ -351,6 +351,17 @@ async function main() {
   const urls = extractListingUrls(listingHtml);
   console.log(`   ${urls.length} avisos encontrados.`);
 
+  // 0 avisos casi nunca es real: es Zonaprop bloqueando el request (captcha /
+  // anti-bot que igual responde 200) o un cambio de su HTML que rompió
+  // extractListingUrls. Sin este corte, el script sobrescribía
+  // properties.mock.ts con una lista vacía y el sitio podía publicarse sin
+  // ninguna propiedad. Se aborta sin tocar el archivo.
+  if (urls.length === 0) {
+    throw new Error(
+      'Zonaprop devolvió 0 avisos — probable bloqueo o cambio de HTML. No se modificó properties.mock.ts.',
+    );
+  }
+
   const properties = [];
   const warnings = [];
   for (const url of urls) {
