@@ -62,12 +62,20 @@ export default async function handler(req: Request): Promise<Response> {
     return new Response(JSON.stringify({ error: 'Servidor no configurado' }), { status: 500 });
   }
 
-  let body: LeadRequestBody;
+  let parsed: unknown;
   try {
-    body = await req.json();
+    parsed = await req.json();
   } catch {
     return new Response(JSON.stringify({ error: 'Body inválido' }), { status: 400 });
   }
+  // Auditoría Codex 26-sep-2026: `req.json()` resuelve a `null` para el JSON
+  // literal "null" (no tira excepción) -- sin este chequeo, body.name más
+  // abajo explotaba con un TypeError sin capturar, devolviendo un 500 crudo
+  // en vez de un 400 limpio.
+  if (typeof parsed !== 'object' || parsed === null) {
+    return new Response(JSON.stringify({ error: 'Body inválido' }), { status: 400 });
+  }
+  const body = parsed as LeadRequestBody;
 
   const name = asString(body.name);
   const email = asString(body.email);
