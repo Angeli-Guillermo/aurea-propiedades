@@ -63,8 +63,14 @@ export default async function handler(req: Request): Promise<Response> {
   // mitigación de costo cero: exige que el POST venga del propio sitio, lo
   // que corta el vector de abuso más común (bots pegándole directo a la
   // URL de la función) sin bloquear el formulario real.
+  // Auditoría Codex 26-sep-2026: la regex original solo aceptaba
+  // cini.com.ar y bloqueaba cualquier preview de Vercel (*.vercel.app) sin
+  // querer -- se amplía para no romper el testing de deploys de preview.
+  // Sigue siendo una mitigación de costo cero, no un rate-limit real: un
+  // atacante que fuerza el header Origin la elude igual (documentado desde
+  // el commit original).
   const origin = req.headers.get('origin') ?? req.headers.get('referer') ?? '';
-  if (!/^https:\/\/(www\.)?cini\.com\.ar(\/|$)/.test(origin)) {
+  if (!/^https:\/\/([a-z0-9-]+\.)*?(cini\.com\.ar|vercel\.app)(\/|$)/i.test(origin)) {
     return new Response(JSON.stringify({ error: 'Origen no permitido' }), { status: 403 });
   }
 
@@ -107,7 +113,14 @@ export default async function handler(req: Request): Promise<Response> {
     return new Response(JSON.stringify({ error: 'Faltan campos obligatorios' }), { status: 400 });
   }
 
-  const intentLabel = isNewsletter ? 'Alta newsletter' : (INTENT_LABELS[intentRaw] ?? intentRaw ?? '(no especificado)');
+  // Auditoría Codex 26-sep-2026: INTENT_LABELS es un objeto plano -- con
+  // intentRaw='constructor' (u otra prop heredada de Object.prototype),
+  // INTENT_LABELS[intentRaw] devolvía la función heredada en vez de
+  // undefined, y escapeHtml() más abajo explotaba al llamarle .replace().
+  // Object.hasOwn exige que sea una propiedad propia del objeto.
+  const intentLabel = isNewsletter
+    ? 'Alta newsletter'
+    : (Object.hasOwn(INTENT_LABELS, intentRaw) ? INTENT_LABELS[intentRaw] : intentRaw) || '(no especificado)';
 
   const html = isNewsletter
     ? `
