@@ -38,12 +38,41 @@ const FONT_CACHE = join(ROOT, 'dist', '.cache', 'Inter.ttf');
 const FONT_URL =
   'https://raw.githubusercontent.com/google/fonts/main/ofl/inter/Inter%5Bopsz,wght%5D.ttf';
 
+// Auditoría extrema (03-oct-2026, Codex): `gallery` viene de scrapear HTML de
+// Zonaprop (sync-properties.mjs) -- si un aviso de un tercero manipulara esa
+// URL, este fetch() la descargaría sin restringir protocolo, host o tamaño.
+// No se conoce con certeza el dominio exacto del CDN de Zonaprop (para no
+// hardcodear un allowlist que rompa el sync real si está mal), así que la
+// validación se queda en lo verificable sin adivinar: exige HTTPS y bloquea
+// hosts que sean una IP literal (loopback/privada/metadata de nube como
+// 169.254.169.254 siempre se referencian por IP, nunca por DNS en un CDN
+// real) + un tope de tamaño para no quedar descargando una respuesta enorme.
+const MAX_IMAGE_BYTES = 20 * 1024 * 1024;
+function isSafeImageUrl(urlStr) {
+  let u;
+  try {
+    u = new URL(urlStr);
+  } catch {
+    return false;
+  }
+  if (u.protocol !== 'https:') return false;
+  const host = u.hostname.toLowerCase();
+  if (host === 'localhost' || /^(\d{1,3}\.){3}\d{1,3}$/.test(host) || host.includes(':')) return false;
+  return true;
+}
+
 const MAX_PHOTOS = 6;
 const PHOTO_SECONDS = 2.6;
 const OUTRO_SECONDS = 3;
 const FPS = 30;
 const WIDTH = 1080;
 const HEIGHT = 1920;
+// Cuánto se desplaza el encuadre de punta a punta del clip, como fracción del
+// ancho del cuadro compuesto (foto real + relleno de fondo desenfocado). Bajo
+// a propósito: el contenido real de la foto está centrado con relleno de blur
+// alrededor, así que un paneo grande empieza a mostrar más blur que foto. Este
+// valor deja el desplazamiento perceptible sin comerse el borde de la foto.
+const PAN_FRACTION = 0.06;
 
 const TYPE_LABELS = {
   piso: 'Departamento',
@@ -173,10 +202,17 @@ async function downloadPhotos(property, dir) {
   for (let i = 0; i < urls.length && paths.length < MAX_PHOTOS; i++) {
     const url = urls[i];
     if (EXCLUDED_PHOTO_URLS.has(url)) continue;
+    if (!isSafeImageUrl(url)) {
+      console.warn(`   ⚠️  Foto ${i + 1} tiene una URL no permitida (${url}) — se omite.`);
+      continue;
+    }
     try {
       const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const contentLength = Number(res.headers.get('content-length') ?? 0);
+      if (contentLength > MAX_IMAGE_BYTES) throw new Error(`imagen demasiado grande (${contentLength} bytes)`);
       const buf = Buffer.from(await res.arrayBuffer());
+      if (buf.length > MAX_IMAGE_BYTES) throw new Error(`imagen demasiado grande (${buf.length} bytes)`);
       const hash = createHash('sha1').update(buf).digest('hex');
       if (seenHashes.has(hash)) {
         console.warn(`   ⚠️  Foto ${i + 1} es idéntica a otra ya descargada — se omite.`);
@@ -202,7 +238,7 @@ async function downloadPhotos(property, dir) {
  * Ahora se ve la foto COMPLETA (sin recortar) centrada sobre un fondo de la
  * misma foto, desenfocado y oscurecido, que rellena el resto del cuadro.
  */
-function buildPhotoFilter({ font: rawFont, badge, address, price, specs }) {
+function buildPhotoFilter({ font: rawFont, badge, address, price, specs, panDirection }) {
   const font = escFilterPath(rawFont);
   const frames = Math.round(PHOTO_SECONDS * FPS);
   const box = (color) => `box=1:boxcolor=${color}:boxborderw=16`;
@@ -221,18 +257,21 @@ function buildPhotoFilter({ font: rawFont, badge, address, price, specs }) {
     `[bg]scale=${WIDTH}:${HEIGHT}:force_original_aspect_ratio=increase,crop=${WIDTH}:${HEIGHT},gblur=sigma=40,eq=brightness=-0.08[bg2];` +
     `[fg]scale=${WIDTH}:${HEIGHT}:force_original_aspect_ratio=decrease[fg2];` +
     `[bg2][fg2]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/2,` +
-    `zoompan=z='min(zoom+0.0008,1.15)':d=${frames}:s=${WIDTH}x${HEIGHT}:fps=${FPS},` +
+    `zoompan=z='min(zoom+0.0008,1.15)':` +
+    `x='iw/2-(iw/zoom/2)+(${panDirection})*(on/${frames})*iw*${PAN_FRACTION}':` +
+    `y='ih/2-(ih/zoom/2)':` +
+    `d=${frames}:s=${WIDTH}x${HEIGHT}:fps=${FPS},` +
     texts
   );
 }
 
-async function buildPhotoClip(photoPath, outPath, texts, font) {
+async function buildPhotoClip(photoPath, outPath, texts, font, panDirection) {
   await run('ffmpeg', [
     '-y',
     '-loop', '1',
     '-i', photoPath,
     '-t', String(PHOTO_SECONDS),
-    '-filter_complex', buildPhotoFilter({ font, ...texts }),
+    '-filter_complex', buildPhotoFilter({ font, panDirection, ...texts }),
     '-r', String(FPS),
     '-pix_fmt', 'yuv420p',
     '-an',
@@ -304,7 +343,10 @@ async function generateOne(property, font, logo) {
     const clipPaths = [];
     for (let i = 0; i < photos.length; i++) {
       const clipPath = join(workDir, `clip-${String(i).padStart(2, '0')}.mp4`);
-      await buildPhotoClip(photos[i], clipPath, texts, font);
+      // Alterna dirección por foto (par → derecha, impar → izquierda) para que
+      // la secuencia completa no se sienta repetitiva paneando siempre igual.
+      const panDirection = i % 2 === 0 ? 1 : -1;
+      await buildPhotoClip(photos[i], clipPath, texts, font, panDirection);
       clipPaths.push(clipPath);
     }
 

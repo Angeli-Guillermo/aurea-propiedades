@@ -351,6 +351,19 @@ async function main() {
   const urls = extractListingUrls(listingHtml);
   console.log(`   ${urls.length} avisos encontrados.`);
 
+  // Auditoría extrema (03-oct-2026, Codex): si Zonaprop cambia la estructura
+  // del HTML o muestra un desafío antibot, extractListingUrls puede devolver
+  // [] sin que fetchHtml tire error (la respuesta sigue siendo 200). Sin este
+  // guard, el writeFile de más abajo pisaba igual OUTPUT_PATH con un array
+  // vacío -- un fallo transitorio del scraper borraba toda la cartera real.
+  if (urls.length === 0) {
+    throw new Error(
+      'Se encontraron 0 avisos en el listado -- probable cambio de estructura o bloqueo antibot de Zonaprop. Se aborta sin tocar ' +
+        OUTPUT_PATH +
+        ' para no pisar la cartera existente.',
+    );
+  }
+
   const properties = [];
   const warnings = [];
   for (const url of urls) {

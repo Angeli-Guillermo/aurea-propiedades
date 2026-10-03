@@ -159,10 +159,34 @@ function buildWatermarkSvg(width: number, height: number): Buffer {
 const CANVAS_WIDTH = 1080;
 const CANVAS_HEIGHT = 1350;
 
+// Auditoría extrema (03-oct-2026, Codex): `url` viene de `gallery`, scrapeada
+// de Zonaprop (sync-properties.mjs) -- ver el mismo comentario en
+// generate-videos.mjs. No se conoce con certeza el dominio exacto del CDN de
+// Zonaprop (para no hardcodear un allowlist que rompa el flujo real si está
+// mal), así que la validación exige HTTPS y bloquea hosts que sean una IP
+// literal, más un tope de tamaño.
+const MAX_IMAGE_BYTES = 20 * 1024 * 1024;
+function isSafeImageUrl(urlStr: string): boolean {
+  let u: URL;
+  try {
+    u = new URL(urlStr);
+  } catch {
+    return false;
+  }
+  if (u.protocol !== 'https:') return false;
+  const host = u.hostname.toLowerCase();
+  if (host === 'localhost' || /^(\d{1,3}\.){3}\d{1,3}$/.test(host) || host.includes(':')) return false;
+  return true;
+}
+
 async function watermarkOne(url: string, outPath: string): Promise<void> {
+  if (!isSafeImageUrl(url)) throw new Error(`URL de imagen no permitida: ${url}`);
   const res = await fetch(url);
   if (!res.ok) throw new Error(`No se pudo descargar ${url} (HTTP ${res.status})`);
+  const contentLength = Number(res.headers.get('content-length') ?? 0);
+  if (contentLength > MAX_IMAGE_BYTES) throw new Error(`Imagen demasiado grande (${contentLength} bytes): ${url}`);
   const original = Buffer.from(await res.arrayBuffer());
+  if (original.length > MAX_IMAGE_BYTES) throw new Error(`Imagen demasiado grande (${original.length} bytes): ${url}`);
 
   const framed = await sharp(original)
     .resize(CANVAS_WIDTH, CANVAS_HEIGHT, { fit: 'cover', position: 'centre' })
