@@ -28,4 +28,12 @@ jobs:
       - name: Esperar al servidor
         run: npx --yes wait-on http://localhost:4173
       - name: Auditar accesibilidad
-        run: npx --yes pa11y-ci --config .pa11yci.json
+        # Usa el Chrome que ya trae el runner de GitHub en vez de depender de la
+        # descarga de puppeteer, que fallo el 05-oct-2026 ("Could not find
+        # Chrome") y dejo el check en rojo sin que cambiara nada del sitio.
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: 'true'
+        run: |
+          export PUPPETEER_EXECUTABLE_PATH="$(command -v google-chrome || command -v google-chrome-stable)"
+          echo "Chrome: $PUPPETEER_EXECUTABLE_PATH"
+          npx --yes pa11y-ci --config .pa11yci.json
