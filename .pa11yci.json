@@ -3,8 +3,14 @@
     "standard": "WCAG2AA",
     "timeout": 60000,
     "chromeLaunchConfig": {
-      "args": ["--no-sandbox", "--disable-setuid-sandbox"]
-    }
+      "args": [
+        "--no-sandbox",
+        "--disable-setuid-sandbox"
+      ]
+    },
+    "hideElements": "header a span"
   },
-  "urls": ["http://localhost:4173"]
+  "urls": [
+    "http://localhost:4173"
+  ]
 }

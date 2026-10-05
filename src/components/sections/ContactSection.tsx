@@ -64,7 +64,7 @@ export function ContactSection() {
                       <Icon className="size-4" aria-hidden />
                     </span>
                     <span>
-                      <span className="block text-[0.6875rem] uppercase tracking-[0.18em] text-ink-400">
+                      <span className="block text-[0.6875rem] uppercase tracking-[0.18em] text-ink-500">
                         {item.label}
                       </span>
                       <span className="mt-0.5 block text-[0.9375rem] text-ink-900">
