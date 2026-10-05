@@ -87,7 +87,7 @@ export function ValuationForm() {
     >
       {/* Intención — decide el resto de la conversación comercial */}
       <fieldset>
-        <legend className="text-[0.6875rem] uppercase tracking-[0.2em] text-ink-400">
+        <legend className="text-[0.6875rem] uppercase tracking-[0.2em] text-ink-500">
           ¿Qué necesitás?
         </legend>
         <div className="mt-4 grid gap-2 sm:grid-cols-3">
@@ -250,7 +250,7 @@ export function ValuationForm() {
           : ''}
       </p>
 
-      <p className="mt-4 text-xs text-ink-400">
+      <p className="mt-4 text-xs text-ink-500">
         Respondemos en menos de 24 h laborables. Nunca compartimos tus datos con terceros.
       </p>
     </form>
@@ -278,7 +278,7 @@ function Field({
         className="mb-2 flex items-baseline justify-between text-[0.8125rem] font-medium text-ink-700"
       >
         {label}
-        {optional ? <span className="text-xs font-normal text-ink-400">Opcional</span> : null}
+        {optional ? <span className="text-xs font-normal text-ink-500">Opcional</span> : null}
       </label>
       {children}
       <FieldError message={error} />

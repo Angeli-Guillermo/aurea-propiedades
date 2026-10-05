@@ -37,7 +37,7 @@ export function About() {
                 variants={fadeUp}
                 className="inline-flex w-fit items-center gap-2 rounded-full border border-gold-500/25 bg-gold-50 py-1.5 pl-2 pr-4 text-xs font-medium text-gold-700"
               >
-                <span className="grid size-6 place-items-center rounded-full bg-gold-500 font-display text-[0.6875rem] text-sand-50">
+                <span className="grid size-6 place-items-center rounded-full bg-gold-600 font-display text-[0.6875rem] text-sand-50">
                   {new Date().getFullYear() - SITE.foundedYear}
                 </span>
                 años operando en Buenos Aires

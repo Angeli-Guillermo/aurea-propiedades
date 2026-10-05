@@ -27,7 +27,7 @@ export function WhatsAppButton() {
         <path d="M12.04 2C6.6 2 2.18 6.42 2.18 11.86c0 1.74.46 3.44 1.32 4.94L2 22l5.34-1.4a9.84 9.84 0 0 0 4.7 1.2h.01c5.43 0 9.85-4.42 9.85-9.86A9.79 9.79 0 0 0 19.02 4.9 9.79 9.79 0 0 0 12.04 2Zm0 17.98h-.01a8.2 8.2 0 0 1-4.17-1.14l-.3-.18-3.1.81.83-3.02-.2-.31a8.13 8.13 0 0 1-1.25-4.34c0-4.52 3.68-8.19 8.2-8.19a8.15 8.15 0 0 1 8.19 8.2c0 4.52-3.68 8.17-8.19 8.17Z" />
       </svg>
 
-      <span className="max-w-0 overflow-hidden whitespace-nowrap text-sm font-medium text-white opacity-0 transition-all duration-400 ease-out-expo group-hover:max-w-40 group-hover:opacity-100">
+      <span className="max-w-0 overflow-hidden whitespace-nowrap text-sm font-medium text-ink-950 opacity-0 transition-all duration-400 ease-out-expo group-hover:max-w-40 group-hover:opacity-100">
         Hablemos
       </span>
     </motion.a>
