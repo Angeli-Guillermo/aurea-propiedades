@@ -20,3 +20,6 @@ pnpm-debug.log*
 .netlify
 
 .vercel
+
+# e2e (reportes y artefactos de corrida)
+.e2e/
