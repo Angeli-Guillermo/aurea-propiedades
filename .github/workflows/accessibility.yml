@@ -28,4 +28,4 @@ jobs:
       - name: Esperar al servidor
         run: npx --yes wait-on http://localhost:4173
       - name: Auditar accesibilidad
-        run: npx --yes pa11y-ci --standard WCAG2AA http://localhost:4173
+        run: npx --yes pa11y-ci --config .pa11yci.json
