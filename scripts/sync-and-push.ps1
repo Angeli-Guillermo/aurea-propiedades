@@ -43,9 +43,12 @@ try {
     # commitea cambios de ESE path, sin tocar lo que ya estuviera preparado
     # en el índice por otra cosa -- antes, un `git add` de otro trabajo
     # pendiente en este mismo checkout se colaba en este commit automático.
-    git add src/data/properties.mock.ts
+    # public/properties tiene las portadas alojadas en el propio sitio (las
+    # genera scripts/localize-covers.mjs al final del sync): tienen que viajar
+    # en el mismo commit que el mock, porque el mock ya apunta a ellas.
+    git add src/data/properties.mock.ts public/properties
     if ($LASTEXITCODE -ne 0) { throw "git add falló con código $LASTEXITCODE" }
-    git commit -m "chore: sync cartera desde Zonaprop [auto]" -- src/data/properties.mock.ts | Out-Null
+    git commit -m "chore: sync cartera desde Zonaprop [auto]" -- src/data/properties.mock.ts public/properties | Out-Null
     if ($LASTEXITCODE -ne 0) { throw "git commit falló con código $LASTEXITCODE" }
     git push | Out-Null
     if ($LASTEXITCODE -ne 0) { throw "git push falló con código $LASTEXITCODE" }

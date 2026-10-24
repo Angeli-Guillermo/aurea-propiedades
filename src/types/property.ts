@@ -75,8 +75,11 @@ export const propertySchema = z.object({
 
   featured: z.boolean().default(false),
 
-  /** Imagen principal (card + hero del modal). */
-  image: z.url(),
+  /**
+   * Imagen principal (card + hero del modal). URL remota o ruta propia del
+   * sitio (`/properties/<slug>.webp`, generada por scripts/localize-covers.mjs).
+   */
+  image: z.union([z.url(), z.string().startsWith('/')]),
   gallery: z.array(z.url()).default([]),
   features: z.array(z.string()).default([]),
 
