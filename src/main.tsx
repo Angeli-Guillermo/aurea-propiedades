@@ -1,5 +1,5 @@
 import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
+import { createRoot, hydrateRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -27,11 +27,19 @@ if (!container) {
   throw new Error('No se ha encontrado el elemento #root en index.html');
 }
 
-createRoot(container).render(
+const app = (
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <App />
       <Analytics />
     </QueryClientProvider>
-  </StrictMode>,
+  </StrictMode>
 );
+
+// En producción el HTML viene pre-renderizado (scripts/prerender.mjs): se hidrata.
+// En desarrollo (`vite dev`) el #root está vacío y se renderiza desde cero.
+if (container.hasChildNodes()) {
+  hydrateRoot(container, app);
+} else {
+  createRoot(container).render(app);
+}

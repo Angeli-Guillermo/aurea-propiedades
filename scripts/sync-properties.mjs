@@ -31,6 +31,8 @@ import { writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
+import { localizeCovers } from './localize-covers.mjs';
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUTPUT_PATH = resolve(__dirname, '../src/data/properties.mock.ts');
 
@@ -391,6 +393,15 @@ async function main() {
   await writeFile(OUTPUT_PATH, content, 'utf8');
   console.log(`✅ ${properties.length} propiedades escritas en ${OUTPUT_PATH}`);
   console.log('   Dale una revisada rápida — las descripciones son el texto real del aviso, sin pulir.');
+
+  // Portadas al propio hosting. Si falla, el sitio sigue funcionando con la URL remota.
+  try {
+    const { total, done, failed } = await localizeCovers();
+    console.log(`🖼️  ${done}/${total} portadas guardadas en public/properties/`);
+    failed.forEach((f) => warnings.push(`Portada sin localizar (queda remota): ${f}`));
+  } catch (err) {
+    warnings.push(`No se pudieron localizar las portadas (quedan remotas): ${err.message}`);
+  }
 
   if (warnings.length > 0) {
     console.log(`\n⚠️  ${warnings.length} aviso(s) necesitan revisión manual:`);
