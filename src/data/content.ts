@@ -43,6 +43,8 @@ export interface Service {
   title: string;
   description: string;
   bullets: string[];
+  /** Página propia del servicio (estática, en public/). Si existe, la tarjeta enlaza a ella. */
+  href?: string;
 }
 
 export const SERVICES: Service[] = [
@@ -59,6 +61,7 @@ export const SERVICES: Service[] = [
     description:
       'Un informe con comparables reales de los últimos 12 meses, no una estimación automática. Lo recibís en 48 horas y es gratuito.',
     bullets: ['Comparables cerrados, no publicados', 'Análisis de absorción por barrio', 'Rango de precio realista en USD'],
+    href: '/tasacion-de-propiedades/',
   },
   {
     icon: 'search',

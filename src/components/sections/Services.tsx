@@ -78,6 +78,15 @@ export function Services() {
                     </li>
                   ))}
                 </ul>
+
+                {service.href && (
+                  <a
+                    href={service.href}
+                    className="mt-6 inline-flex w-fit text-sm font-medium text-gold-300 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold-400"
+                  >
+                    Ver más sobre la tasación →
+                  </a>
+                )}
               </motion.article>
             );
           })}
