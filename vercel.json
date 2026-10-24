@@ -1,6 +1,12 @@
 {
   "redirects": [
     {
+      "source": "/",
+      "has": [{ "type": "host", "value": "www.cini.com.ar" }],
+      "destination": "https://cini.com.ar/",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "www.cini.com.ar" }],
       "destination": "https://cini.com.ar/:path*",
