@@ -7,6 +7,12 @@
       "permanent": true
     },
     {
+      "source": "/:path+/",
+      "has": [{ "type": "host", "value": "www.cini.com.ar" }],
+      "destination": "https://cini.com.ar/:path+/",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "www.cini.com.ar" }],
       "destination": "https://cini.com.ar/:path*",
