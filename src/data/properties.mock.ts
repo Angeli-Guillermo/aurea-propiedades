@@ -240,7 +240,7 @@ export const MOCK_PROPERTIES: Property[] = [
     parking: 0,
     featured: false,
     image: "/properties/belgrano-lote-de-excelentes-medidas-14-x-60-m.webp",
-    gallery: ["https://imgar.zonapropcdn.com/avisos/resize/1/00/41/85/64/03/1200x1200/1567414021.jpg"],
+    gallery: ["/properties/belgrano-lote-de-excelentes-medidas-14-x-60-m.webp"],
     features: [],
     lat: -34.5563418,
     lng: -58.4445788,
