@@ -7,7 +7,7 @@ import type { Property } from '@/types/property';
  *
  * ⚠️ NO EDITAR A MANO — los cambios se pierden en el próximo sync.
  * Para actualizar la cartera: `node scripts/sync-properties.mjs`.
- * Última sincronización: 2026-09-04
+ * Última sincronización: 2026-09-04 (más el lote de Echeverría 1300, agregado a mano el 2026-10-31 porque el sync recibe 403 de Cloudflare)
  *
  * Las descripciones son el texto real del aviso (pasado a minúsculas con
  * mayúscula inicial), no un resumen escrito a mano — pueden sonar un poco
@@ -221,5 +221,28 @@ export const MOCK_PROPERTIES: Property[] = [
     features: ["Disposición Frente","Luminosidad Muy luminoso","Orientación SE","Apto crédito"],
     lat: -34.5662587,
     lng: -58.4706454,
+  },
+  {
+    id: 'p-009',
+    slug: 'belgrano-lote-de-excelentes-medidas-14-x-60-m',
+    title: "Belgrano - Lote de Excelentes Medidas 14 x 60 m",
+    description: "Lote de 14 x 60 mts (840 m2). Zonificacion u23. Z 1 - apto para garaje - clinica- establecimiento educativo -etc. - se pueden edificar hasta 7 pisos + retiro y hasta 2 subsuelos (destinados a cocheras-bauleras etc.) multifamiliar - se tomarian m2 en parte de pago - o dlrs y 8 cocheras - se podrian tomar otras propiedades en parte de pago - tambien en el exterior (miami - punta del este etc.) - consulte otras facilidades - se escuchan proyectos y propuestas",
+    price: 4500000,
+    currency: 'USD',
+    status: 'venta',
+    type: 'terreno',
+    neighborhood: "Belgrano",
+    city: 'CABA',
+    address: "Echeverria 1300",
+    bedrooms: 0,
+    bathrooms: 0,
+    area: 840,
+    parking: 0,
+    featured: false,
+    image: "/properties/belgrano-lote-de-excelentes-medidas-14-x-60-m.webp",
+    gallery: ["https://imgar.zonapropcdn.com/avisos/resize/1/00/41/85/64/03/1200x1200/1567414021.jpg"],
+    features: [],
+    lat: -34.5563418,
+    lng: -58.4445788,
   }
 ];
