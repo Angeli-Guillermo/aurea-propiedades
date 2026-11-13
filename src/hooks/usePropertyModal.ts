@@ -46,5 +46,8 @@ export function usePropertyModal(properties: Property[]) {
     window.history.replaceState(null, '', buildUrl(null));
   }, []);
 
-  return { selected, select, close, shareUrl: selected ? buildUrl(selected.id) : null };
+  // Se comparte la ficha estática (scripts/property-pages.mjs): trae foto y
+  // título propios en la vista previa de WhatsApp; `?propiedad=` sigue abriendo el modal.
+  const shareUrl = selected ? `${window.location.origin}/propiedades/${selected.slug}/` : null;
+  return { selected, select, close, shareUrl };
 }
