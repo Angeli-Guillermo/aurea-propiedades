@@ -12,6 +12,7 @@ import {
   type LeadFormInput,
   type LeadPayload,
 } from '@/api/leads';
+import { marcarEvento } from '@/lib/clarity';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/cn';
 import { EASE_OUT_EXPO } from '@/lib/motion';
@@ -51,7 +52,11 @@ export function ValuationForm() {
 
   const mutation = useMutation({
     mutationFn: submitLead,
-    onSuccess: () => reset(DEFAULT_VALUES),
+    onSuccess: (_data, lead) => {
+      marcarEvento(`contacto_formulario_${lead.intent}`);
+      reset(DEFAULT_VALUES);
+    },
+    onError: () => marcarEvento('contacto_formulario_error'),
   });
 
   // Estado de éxito: sustituye al formulario para cerrar el bucle de conversión.

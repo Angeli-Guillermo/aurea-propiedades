@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Analytics } from '@vercel/analytics/react';
 
 import App from '@/App';
+import { escucharClicsWhatsapp } from '@/lib/clarity';
 import '@/index.css';
 
 /**
@@ -21,6 +22,8 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+escucharClicsWhatsapp();
 
 const container = document.getElementById('root');
 if (!container) {
