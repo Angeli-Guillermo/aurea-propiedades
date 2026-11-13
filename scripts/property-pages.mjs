@@ -154,7 +154,10 @@ ${main}
     const precio = formatPrice(p.price, p.currency);
     const resumen = [p.rooms && `${p.rooms} amb.`, formatArea(p.area)].filter(Boolean).join(' · ');
     const title = `${heading(p)} · ${resumen} · ${precio} | CINI`;
-    const description = `${p.title}. ${heading(p)}, ${resumen}, ${precio}. Consultá con Consultora Internacional por WhatsApp.`;
+    // El título ya dice tipo, barrio, ambientes, m² y precio: la descripción suma
+    // lo que no está (dormitorios, baños) y quién atiende, sin repetirlo.
+    const detalle = [p.bedrooms > 0 && `${p.bedrooms} dormitorio${p.bedrooms > 1 ? 's' : ''}`, p.bathrooms > 0 && `${p.bathrooms} baño${p.bathrooms > 1 ? 's' : ''}`, p.parking > 0 && `${p.parking} cochera${p.parking > 1 ? 's' : ''}`].filter(Boolean).join(', ');
+    const description = `${detalle ? detalle[0].toUpperCase() + detalle.slice(1) + '. ' : ''}Consultá por WhatsApp con Mauro Otranto, corredor inmobiliario (CUCICBA Mat. 5846).`;
     const fotos = [...new Set(p.gallery)].filter((g) => g !== p.image);
     const listing = {
       '@context': 'https://schema.org',
