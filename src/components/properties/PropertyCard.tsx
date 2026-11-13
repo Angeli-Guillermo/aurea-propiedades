@@ -19,12 +19,18 @@ export function PropertyCard({ property, onSelect, priority = false }: PropertyC
     // El artículo sólo participa del stagger del grid; el hover vive en el
     // botón interior para no interrumpir la propagación de variants del padre.
     <motion.article variants={staggerItem} className="group h-full">
-      <motion.button
-        type="button"
+      {/* Enlace real a la ficha (indexable, abre en pestaña nueva con Ctrl/clic medio);
+          el clic simple sigue abriendo el modal. */}
+      <motion.a
+        href={`/propiedades/${property.slug}/`}
         variants={cardHover}
         initial="rest"
         whileHover="hover"
-        onClick={() => onSelect(property)}
+        onClick={(e) => {
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+          e.preventDefault();
+          onSelect(property);
+        }}
         aria-label={`Ver detalle de ${property.title}`}
         className={cn(
           'flex h-full w-full flex-col overflow-hidden rounded-2xl bg-white text-left',
@@ -111,7 +117,7 @@ export function PropertyCard({ property, onSelect, priority = false }: PropertyC
             </div>
           </dl>
         </div>
-      </motion.button>
+      </motion.a>
     </motion.article>
   );
 }
